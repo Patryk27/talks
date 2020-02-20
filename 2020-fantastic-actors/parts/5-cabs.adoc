@@ -1,0 +1,363 @@
+[.compact]
+== !
+
+[.text-center]
+\... back to the cabs though...
+
+image::taxi.png[]
+
+== rusty-cabs: Flow
+
+[.text-center]
+[graphviz]
+----
+digraph {
+    customer [label="Customer"]
+}
+----
+
+== rusty-cabs: Flow
+
+[.text-center]
+[graphviz]
+----
+digraph {
+    customer [label="Customer"]
+    dispatcher [label="Dispatcher"]
+}
+----
+
+== rusty-cabs: Flow
+
+[.text-center]
+[graphviz]
+----
+digraph {
+    customer [label="Customer"]
+
+    dispatcher [label="Dispatcher"]
+
+    cab_a [label="Cab A"]
+    cab_b [label="Cab B"]
+    cab_c [label="Cab C"]
+}
+----
+
+== rusty-cabs: Flow
+
+[.text-center]
+[graphviz]
+----
+digraph {
+    rankdir=LR
+
+    customer [label="Customer"]
+    customer -> dispatcher [style=dashed, color=gray]
+
+    dispatcher [label="Dispatcher"]
+    dispatcher -> cab_a [style=dashed, color=gray]
+    dispatcher -> cab_b [style=dashed, color=gray]
+    dispatcher -> cab_c [style=dashed, color=gray]
+    dispatcher -> customer [style=dashed, color=gray]
+
+    cab_a [label="Cab A"]
+    cab_a -> dispatcher [style=dashed, color=gray]
+
+    cab_b [label="Cab B"]
+    cab_b -> dispatcher [style=dashed, color=gray]
+
+    cab_c [label="Cab C"]
+    cab_c -> dispatcher [style=dashed, color=gray]
+}
+----
+
+== rusty-cabs: Flow
+
+[.text-center]
+[graphviz]
+----
+digraph {
+    rankdir=LR
+
+    customer [label="Customer"]
+    customer -> dispatcher [style=dashed, color=blue, label="I want a cab from LA to NYC"]
+
+    dispatcher [label="Dispatcher"]
+    dispatcher -> cab_a [style=dashed, color=gray]
+    dispatcher -> cab_b [style=dashed, color=gray]
+    dispatcher -> cab_c [style=dashed, color=gray]
+    dispatcher -> customer [style=dashed, color=gray]
+
+    cab_a [label="Cab A"]
+    cab_a -> dispatcher [style=dashed, color=gray]
+
+    cab_b [label="Cab B"]
+    cab_b -> dispatcher [style=dashed, color=gray]
+
+    cab_c [label="Cab C"]
+    cab_c -> dispatcher [style=dashed, color=gray]
+}
+----
+
+== rusty-cabs: Flow
+
+[.text-center]
+[graphviz]
+----
+digraph {
+    rankdir=LR
+
+    customer [label="Customer"]
+    customer -> dispatcher [style=dashed, color=gray]
+
+    dispatcher [label="Dispatcher"]
+    dispatcher -> cab_a [style=dashed, color=blue, label="There's a ride: LA -> NYC"]
+    dispatcher -> cab_b [style=dashed, color=blue, label="There's a ride: LA -> NYC"]
+    dispatcher -> cab_c [style=dashed, color=blue, label="There's a ride: LA -> NYC"]
+    dispatcher -> customer [style=dashed, color=gray]
+
+    cab_a [label="Cab A"]
+    cab_a -> dispatcher [style=dashed, color=gray]
+
+    cab_b [label="Cab B"]
+    cab_b -> dispatcher [style=dashed, color=gray]
+
+    cab_c [label="Cab C"]
+    cab_c -> dispatcher [style=dashed, color=gray]
+}
+----
+
+== rusty-cabs: Flow
+
+[.text-center]
+[graphviz]
+----
+digraph {
+    rankdir=LR
+
+    customer [label="Customer"]
+    customer -> dispatcher [style=dashed, color=gray]
+
+    dispatcher [label="Dispatcher"]
+    dispatcher -> cab_a [style=dashed, color=gray]
+    dispatcher -> cab_b [style=dashed, color=gray]
+    dispatcher -> cab_c [style=dashed, color=gray]
+    dispatcher -> customer [style=dashed, color=gray]
+
+    cab_a [label="Cab A"]
+    cab_a -> dispatcher [style=dashed, color=red, label="I'll pass"]
+
+    cab_b [label="Cab B"]
+    cab_b -> dispatcher [style=dashed, color=gray]
+
+    cab_c [label="Cab C"]
+    cab_c -> dispatcher [style=dashed, color=green, label="Be there in 5 min"]
+}
+----
+
+== rusty-cabs: Flow
+
+[.text-center]
+[graphviz]
+----
+digraph {
+    rankdir=LR
+
+    customer [label="Customer"]
+    customer -> dispatcher [style=dashed, color=gray]
+
+    dispatcher [label="Dispatcher"]
+    dispatcher -> cab_a [style=dashed, color=gray]
+    dispatcher -> cab_b [style=dashed, color=gray]
+    dispatcher -> cab_c [style=dashed, color=gray]
+    dispatcher -> customer [style=dashed, color=green, label="Your cab's on the way"]
+
+    cab_a [label="Cab A"]
+    cab_a -> dispatcher [style=dashed, color=gray]
+
+    cab_b [label="Cab B"]
+    cab_b -> dispatcher [style=dashed, color=gray]
+
+    cab_c [label="Cab C"]
+    cab_c -> dispatcher [style=dashed, color=gray]
+}
+----
+
+== rusty-cabs: Design
+
+[.text-center]
+[graphviz]
+----
+digraph {
+    customer [
+        label="Customer",
+        shape="record",
+    ]
+
+    dispatcher [
+        label="Dispatcher",
+        shape="record",
+    ]
+
+    cab [
+        label="Cab",
+        shape="record",
+    ]
+
+    locator [
+        label="Locator Service",
+        shape="record",
+    ]
+}
+----
+
+== rusty-cabs: Design
+
+[.text-center]
+[graphviz]
+----
+digraph {
+    rankdir="TB"
+
+    customer [
+        label="Customer",
+        shape="record",
+    ]
+
+    customer -> dispatcher [label="  request_ride()", color="blue"]
+
+    dispatcher [
+        label="{
+            Dispatcher
+            |+ request_ride(Point from, Point to): Ride
+        }",
+        shape="record",
+    ]
+}
+----
+
+== rusty-cabs: Design
+
+[.text-center]
+[graphviz]
+----
+digraph {
+    rankdir="TB"
+
+    customer [
+        label="Customer",
+        shape="record",
+    ]
+
+    customer -> dispatcher [label="  request_ride()", color="blue"]
+
+    dispatcher [
+        label="{
+            Dispatcher
+            |+ request_ride(Point from, Point to): Ride
+        }",
+        shape="record",
+    ]
+
+    dispatcher -> cab [label="  announce_ride()", color="blue"]
+
+    cab [
+        label="{
+            Cab
+            |+ announce_ride(Point from, Point to): void
+        }",
+        shape = "record",
+    ]
+}
+----
+
+== rusty-cabs: Design
+
+[.text-center]
+[graphviz]
+----
+digraph {
+    rankdir="TB"
+
+    customer [
+        label="Customer",
+        shape="record",
+    ]
+
+    customer -> dispatcher [label="  request_ride()", color="blue"]
+
+    dispatcher [
+        label="{
+            Dispatcher
+            |+ request_ride(Point from, Point to): Ride
+            |+ claim_ride(RideId id, CabId id): void
+        }",
+        shape="record",
+    ]
+
+    dispatcher -> cab [label="  announce_ride()   ", color="blue"]
+
+    cab [
+        label="{
+            Cab
+            |+ announce_ride(RideId id, Point from, Point to): void
+        }",
+        shape = "record",
+    ]
+
+    cab -> dispatcher [label="  claim_ride()", color="blue"]
+}
+----
+
+== rusty-cabs
+
+[.text-center]
+[graphviz]
+----
+digraph {
+    rankdir="TB"
+
+    customer [
+        label="Customer",
+        shape="record",
+    ]
+
+    customer -> dispatcher [label="  request_ride()", color="blue"]
+
+    dispatcher [
+        label="{
+            Dispatcher
+            |+ request_ride(Point from, Point to): Ride
+            |+ claim_ride(RideId id, CabId id): void
+        }",
+        shape="record",
+    ]
+
+    dispatcher -> cab [label="  announce_ride()   ", color="blue"]
+
+    cab [
+        label="{
+            Cab
+            |+ announce_ride(RideId id, Point from, Point to): void
+        }",
+        shape = "record",
+    ]
+
+    cab -> dispatcher [label="  claim_ride()", color="blue"]
+
+    locator [
+        label="{
+            Locator Service
+            |+ push_position(CabId id, Point position)
+        }",
+        shape="record",
+    ]
+
+    cab -> locator [label="  push_position()", color="blue"]
+}
+----
+
+== rusty-cabs
+
+[.text-center]
+Let's see how it actually end up like!
