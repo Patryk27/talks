@@ -1,48 +1,39 @@
+// @todo needs refactoring
+
 const path = require('path');
 
 const customStyleContent = (node) => {
     const stylesheet = node.getAttribute('stylesheet') || `${__dirname}/styles/main.css`;
-
-    if (path.isAbsolute(stylesheet)) {
-        return stylesheet
-    }
-
     const stylesDirectory = node.getAttribute('stylesdir');
 
-    let start = node.getDocument().getBaseDir();
-
-    if (stylesDirectory) {
-        if (path.isAbsolute(stylesDirectory)) {
-            start = stylesDirectory
-        } else {
-            start = path.join(node.getDocument().getBaseDir(), stylesDirectory)
-        }
-    } else {
-        start = node.getDocument().getBaseDir()
+    if (path.isAbsolute(stylesheet)) {
+        return stylesheet;
     }
 
-    return path.join(start, stylesheet)
+    const dir = path.join(node.getDocument().getBaseDir(), stylesDirectory);
+
+    return path.join(dir, stylesheet);
 };
 
 function calibrationSlide() {
     return `
-    <section class="calibration slide">
-        <img src="images/tv-test-pattern.svg"/>
-    </section>
+        <section class="calibration slide">
+            <img src="images/tv-test-pattern.svg"/>
+        </section>
     `;
 }
 
 function jokeSlide() {
     return `
-    <section class="title slide">
-        <header>
-            <h1>Why I switched from Rust to Go</h1>
-            <h2>... and why I'm never going back</h2>
-        </header>
-        <main>
-            <img src="images/gopher.png"/>
-        </main>
-    </section>
+        <section class="title slide">
+            <header>
+                <h1>Why I switched from Rust to Go</h1>
+                <h2>... and why I'm never going back</h2>
+            </header>
+            <main>
+                <img src="images/gopher.png"/>
+            </main>
+        </section>
     `;
 }
 
@@ -93,7 +84,6 @@ const getImageCanvas = (node) => {
     if (images && images.length > 0) {
         return images[0]
     }
-    return undefined
 };
 
 const sectionInlineStyle = (node) => {
@@ -137,10 +127,12 @@ const sectionRoles = (node) => {
 
 const elementId = (node) => {
     const id = node.getId();
+
     if (id) {
-        return ` id="${id}"`
+        return ` id="${id}"`;
     }
-    return ''
+
+    return '';
 };
 
 module.exports = {
