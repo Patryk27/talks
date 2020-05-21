@@ -186,7 +186,7 @@ module.exports = {
         const roles = node.getRoles();
 
         if (roles && roles.includes('canvas')) {
-            return ''
+            return '';
         }
 
         const height = node.getAttribute('height');

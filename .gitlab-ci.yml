@@ -1,0 +1,12 @@
+stages:
+  - build
+
+before_script:
+  - docker info
+
+build:
+  stage: build
+  tags:
+    - docker
+  script:
+    - ./build-all

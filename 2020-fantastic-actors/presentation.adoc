@@ -1,14 +1,15 @@
 = Fantastic Actors and Where to Find Them: building a simple async actor system from scratch
 Patryk Wychowaniec
+
 :imagesdir: images
 :stylesdir: styles
 :stylesheet: main.css
 
-include::parts/0-enodriver.adoc[]
-include::parts/1-final-effect.adoc[]
-include::parts/2-me.adoc[]
-include::parts/3-crash-course.adoc[]
-include::parts/4-database.adoc[]
-include::parts/5-cabs.adoc[]
-include::parts/6-summary.adoc[]
-include::parts/7-thanks.adoc[]
+include::segments/0-enodriver.adoc[]
+include::segments/1-final-effect.adoc[]
+include::segments/2-me.adoc[]
+include::segments/3-crash-course.adoc[]
+include::segments/4-database.adoc[]
+include::segments/5-cabs.adoc[]
+include::segments/6-summary.adoc[]
+include::segments/7-thanks.adoc[]
