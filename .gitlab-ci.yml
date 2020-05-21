@@ -2,11 +2,15 @@ stages:
   - build
 
 before_script:
-  - docker info
+  - podman info
 
 build:
   stage: build
   tags:
-    - docker
+    - podman
   script:
-    - ./build-all
+    - ./build
+  artifacts:
+    expire_in: 30 days
+    paths:
+      - out
