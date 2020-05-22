@@ -53,12 +53,5 @@ RUN npm install -g --unsafe-perm \
   asciidoctor-pdf \
   asciidoctor-kroki
 
-# Prepare an unprivileged user
-RUN groupadd -r user \
- && useradd -r -g user -G audio,video user \
- && mkdir -p /home/user/Downloads \
- && chown -R user:user /home/user
-
-USER user
 WORKDIR /mnt
 ENTRYPOINT ["asciidoctor-pdf"]

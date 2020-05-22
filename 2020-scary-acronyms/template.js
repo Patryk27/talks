@@ -6,20 +6,6 @@ function calibrationSlide() {
     `;
 }
 
-function jokeSlide() {
-    return `
-        <section class="title slide">
-            <header>
-                <h1>Why I switched from Rust to Go</h1>
-                <h2>... and why I'm never going back</h2>
-            </header>
-            <main>
-                <img src="assets/images/gopher.png"/>
-            </main>
-        </section>
-    `;
-}
-
 function titleSlideHeader(node) {
     const title = node.getDocumentTitle({
         partition: true,
@@ -160,7 +146,6 @@ module.exports = {
         </head>
         <body>
             ${calibrationSlide()}
-            ${jokeSlide()}
             ${titleSlide(node)}
             ${node.getContent()}
         </body>
