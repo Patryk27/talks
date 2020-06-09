@@ -1,0 +1,866 @@
+== HRTBs
+
+Best way to find HRTBs? Hidden in the plain sight!
+
+== HRTBs
+
+[source,rust]
+----
+struct Movie {
+    /* ... */
+}
+----
+
+== HRTBs
+
+[source,rust]
+----
+struct Movie {
+    title: String,
+    year: isize, // gotta care about those
+                 // pre Christian-Era movies!
+}
+----
+
+== HRTBs
+
+[source,rust]
+----
+struct Movie {
+    title: String,
+    year: isize,
+}
+
+impl Movie {
+    pub fn print(&self) {
+        todo!()
+    }
+}
+----
+
+== HRTBs
+
+[source,rust]
+----
+struct Movie {
+    title: String,
+    year: isize,
+}
+
+impl Movie {
+    pub fn print(&self, serialize: &Serializer<Self>) {
+        todo!()
+    }
+}
+----
+
+== HRTBs
+
+[source,rust]
+----
+struct Movie {
+    title: String,
+    year: isize,
+}
+
+impl Movie {
+    pub fn print(&self, serialize: &Serializer<Self>) {
+        println!("{}", serialize(self));
+    }
+}
+----
+
+== HRTBs
+
+[source,rust]
+----
+struct Movie {
+    title: String,
+    year: isize,
+}
+
+impl Movie {
+    pub fn print(&self, serialize: &Serializer<Self>) {
+        println!("{}", serialize(self));
+    }
+}
+
+fn main() {
+    todo!()
+}
+----
+
+== HRTBs
+
+[source,rust]
+----
+/* ... */
+
+impl Movie {
+    pub fn print(&self, serialize: &Serializer<Self>) {
+        println!("{}", serialize(self));
+    }
+}
+
+fn main() {
+    Movie {
+        title: "The Room".into(),
+        year: 2003,
+    }.print(todo!());
+}
+----
+
+== HRTBs
+
+How should our `Serializer` type look like?
+
+[source,rust]
+----
+type Serializer = ?;
+----
+
+== HRTBs
+
+First of all - it has to be generic over `T`:
+
+[source,rust]
+----
+type Serializer<T> = ?;
+----
+
+== HRTBs
+
+\... we also want it to be a function:
+
+[source,rust]
+----
+type Serializer<T> = dyn Fn(?) -> ?;
+----
+
+== HRTBs
+
+\... a one returning string:
+
+[source,rust]
+----
+type Serializer<T> = dyn Fn(?) -> String;
+----
+
+== HRTBs
+
+\... and, obviously, it has to accept the object it wants to serialize:
+
+[source,rust]
+----
+type Serializer<T> = dyn Fn(&T) -> String;
+----
+
+[.compact]
+== HRTBs
+
+Voilà:
+
+[source,rust]
+----
+type Serializer<T> = dyn Fn(&T) -> String; // here
+
+struct Movie {
+    title: String,
+    year: isize,
+}
+
+impl Movie {
+    pub fn print(&self, serialize: &Serializer<Self>) {
+        println!("{}", serialize(self));
+    }
+}
+
+fn main() {
+    Movie {
+        title: "The Room".into(),
+        year: 2003,
+    }.print(todo!());
+}
+----
+
+== HRTBs
+
+Now, to create some actual serializer, we're going to use `serde`.
+
+[.compact]
+== HRTBs
+
+[source,rust]
+----
+use serde::Serialize; // | here
+
+type Serializer<T> = dyn Fn(&T) -> String;
+
+#[derive(Serialize)] // | here
+struct Movie {
+    title: String,
+    year: isize,
+}
+
+impl Movie {
+    pub fn print(&self, serialize: &Serializer<Self>) {
+        println!("{}", serialize(self));
+    }
+}
+
+fn to_json<T>(value: &T) -> String where T: Serialize { // | here
+    todo!()                                             // |
+}                                                       // |
+
+fn main() {
+    Movie {
+        title: "The Room".into(),
+        year: 2003,
+    }.print(to_json); // | here
+}
+----
+
+[.compact]
+== HRTBs
+
+[source,rust]
+----
+use serde::Serialize;
+
+type Serializer<T> = dyn Fn(&T) -> String;
+
+#[derive(Serialize)]
+struct Movie {
+    title: String,
+    year: isize,
+}
+
+impl Movie {
+    pub fn print(&self, serialize: &Serializer<Self>) {
+        println!("{}", serialize(self));
+    }
+}
+
+fn to_json<T>(value: &T) -> String where T: Serialize {
+    serde_json::to_string(value) // | here
+        .unwrap()                // |
+}
+
+fn main() {
+    Movie {
+        title: "The Room".into(),
+        year: 2003,
+    }.print(to_json);
+}
+----
+
+[.compact]
+== HRTBs
+
+[source,rust]
+----
+fn main() {
+    Movie {
+        title: "The Room".into(),
+        year: 2003,
+    }.print(to_json);
+//          ^^^^^^^
+}
+----
+
+[listing]
+----
+error[E0308]: mismatched types
+   |
+26 |     }.print(to_json);
+   |             ^^^^^^^
+   |             |
+   |             expected reference, found fn item
+   |             help: consider borrowing here: `&to_json`
+   |
+   = note: expected reference `&(dyn for<'r> std::ops::Fn(&'r Movie) -> std::string::String + 'static)`
+                found fn item `for<'r> fn(&'r _) -> std::string::String {to_json::<_>}`
+
+error: aborting due to previous error
+----
+
+== HRTBs
+
+*expected reference:*
+
+`&(dyn for<'r> Fn(&'r Movie) -> String + 'static)`
+
+== HRTBs
+
+*expected reference:*
+
+`&(dyn for<'r> Fn(&'r Movie) -> String + 'static)`
+
+[.small]
+(that's our `Serializer`)
+
+== HRTBs
+
+*expected reference:*
+
+`&(dyn for<'r> Fn(&'r Movie) -> String + 'static)`
+
+[.small]
+(that's our `Serializer`)
+
+*found fn item:*
+
+`for<'r> fn(&'r _) -> String {to_json::<_>}`
+
+== HRTBs
+
+*expected reference:*
+
+`&(dyn for<'r> Fn(&'r Movie) -> String + 'static)`
+
+[.small]
+(that's our `Serializer`)
+
+*found fn item:*
+
+`for<'r> fn(&'r _) -> String {to_json::<_>}`
+
+[.small]
+(that's our `to_json`)
+
+== HRTBs
+
+*expected reference:*
+
+`&(dyn for<'r> Fn(&'r Movie) -> String + 'static)`
+
+[.small]
+(that's our `Serializer`)
+
+*found fn item:*
+
+`for<'r> fn(&'r _) -> String {to_json::<_>}`
+
+[.small]
+(that's our `to_json`)
+
+'''
+
+What's this `dyn for` thingie? We didn't write it anywhere!
+
+== HRTBs
+
+Let's go back to our type:
+
+[source,rust]
+----
+type Serializer<T> = dyn Fn(&T) -> String;
+----
+
+== HRTBs
+
+Let's go back to our type:
+
+[source,rust]
+----
+type Serializer<T> = dyn Fn(&T) -> String;
+//                          ^^ so... what's the
+//                             lifetime of this?
+----
+
+== HRTBs
+
+Let's go back to our type:
+
+[source,rust]
+----
+type Serializer<T> = dyn Fn(&T) -> String;
+//                          ^^ so... what's the
+//                             lifetime of this?
+//
+//                             why is this even
+//                             legal?
+----
+
+== HRTBs
+
+Let's go back to our type:
+
+[source,rust]
+----
+type Serializer<T> = dyn Fn(&T) -> String;
+//                          ^^ so... what's the
+//                             lifetime of this?
+//
+//                             why is this even
+//                             legal?
+----
+
+[.text-center]
+Answer: *Lifetime elision*
+
+== HRTBs: Lifetime elision
+
+To make common lifetime patterns more ergonomic, Rust sometimes allows for lifetimes to be _elided_ (i.e. ignored,
+skipped).
+
+== HRTBs: Lifetime elision
+
+To make common lifetime patterns more ergonomic, Rust sometimes allows for lifetimes to be _elided_ (i.e. ignored,
+skipped).
+
+Our tiny example actually used this mechanism *thrice*!
+
+== HRTBs: Lifetime elision (1/3)
+
+[source,rust]
+----
+impl Movie {
+    //           v                 v
+    pub fn print(&self, serialize: &Serializer<Self>) {
+        println!("{}", serialize(self));
+    }
+}
+----
+
+== HRTBs: Lifetime elision (1/3)
+
+[source,rust]
+----
+impl Movie {
+    pub fn print<'a, 'b>(
+        &'a self,
+        serialize: &'b Serializer<Self>,
+    ) {
+        println!("{}", serialize(self));
+    }
+}
+----
+
+== HRTBs: Lifetime elision (2/3)
+
+[source,rust]
+----
+//                   v
+fn to_json<T>(value: &T) -> String
+where T: Serialize {
+    serde_json::to_string(value)
+        .unwrap()
+}
+----
+
+== HRTBs: Lifetime elision (2/3)
+
+[source,rust]
+----
+fn to_json<'a, T>(value: &'a T) -> String
+where T: Serialize {
+    serde_json::to_string(value)
+        .unwrap()
+}
+----
+
+== HRTBs: Lifetime elision (3/3)
+
+[source,rust]
+----
+type Serializer<T> = dyn Fn(&T) -> String;
+----
+
+== HRTBs: Lifetime elision (3/3)
+
+[source,rust]
+----
+type Serializer<T> = dyn Fn(&T) -> String;
+----
+
+What we *want* is a function that will work _for any_ lifetime.
+
+We don't care how long `&T` lives, as long as we can access it during the function call.
+
+== HRTBs: Lifetime elision (3/3)
+
+We _could_ do...
+
+[source,rust]
+----
+type Serializer<'a, T> = dyn Fn(&'a T) -> String;
+----
+
+== HRTBs: Lifetime elision (3/3)
+
+We _could_ do...
+
+[source,rust]
+----
+type Serializer<'a, T> = dyn Fn(&'a T) -> String;
+----
+
+\... but that would be a bit cumbersome to use (and, in a few places, _impossible_ to apply).
+
+\... plus we've already said that we want our serializer to work for *any* lifetime, not a specific one.
+
+== HRTBs: Lifetime elision (3/3)
+
+[.text-center]
+Here come *HRTBs*!
+
+== HRTBs: Lifetime elision (3/3)
+
+[.text-center]
+Here come *higher-ranked trait bounds*!
+
+== HRTBs: Lifetime elision (3/3)
+
+[source,rust]
+----
+type Serializer<T> = dyn for<'a> Fn(&'a T) -> String;
+//                       ^-----^
+----
+
+The underlined part is the way we form a higher-ranked trait bound.
+
+What it means is basically: I don't care about the precise lifetime, make it work for _every one_.
+
+== HRTBs
+
+Thus the name: `higher-ranked` as if `not limited to specific lifetime`, `lifted above the ordinary types`™.
+
+== HRTBs
+
+By the way, it might be tempting to create types such as:
+
+[source,rust]
+----
+type Wat1 = for<T> T;
+type Wat2 = for<'a, T> &'a T;
+type Wat3 = for<T> Vec<T>;
+type Wat4 = for<T> Vec<Box<T>>;
+----
+
+[.text-center]
+image::duck.jpg[]
+
+== HRTBs
+
+By the way, it might be tempting to create types such as:
+
+[source,rust]
+----
+type Wat1 = for<T> T;
+type Wat2 = for<'a, T> &'a T;
+type Wat3 = for<T> Vec<T>;
+type Wat4 = for<T> Vec<Box<T>>;
+----
+
+Worry no more - they are all *illegal*:
+
+[listing]
+----
+error: only lifetime parameters can be used in this context
+  |
+1 | type Wat4 = for<T> Vec<Box<T>>;
+  |                 ^
+----
+
+== HRTBs
+
+Let's go find another HRTB in the wild.
+
+== HRTBs
+
+Let's create a function:
+
+[source,rust]
+----
+fn call_me_maybe() {
+
+}
+----
+
+== HRTBs
+
+Let's make our function create an object _inside_ it:
+
+[source,rust]
+----
+fn call_me_maybe() {
+    let motto = String::from("existential crisis");
+}
+----
+
+== HRTBs
+
+And, eventually, let's make it accept a closure that will get invoked with a _reference_ to that object:
+
+[source,rust]
+----
+fn call_me_maybe(callback: impl Fn(&String)) {
+    let motto = String::from("existential crisis");
+    callback(&motto);
+}
+----
+
+== HRTBs
+
+Now for a quick test:
+
+[source,rust]
+----
+fn call_me_maybe(callback: impl Fn(&String)) {
+    let motto = String::from("existential crisis");
+    callback(&motto);
+}
+
+fn main() {
+    call_me_maybe(|motto| {
+        println!("motto: {}", motto);
+    });
+}
+----
+
+[.compact]
+== HRTBs
+
+It works:
+
+[.columns-2]
+--
+[.left]
+[source,rust]
+----
+fn call_me_maybe(callback: impl Fn(&String)) {
+    let motto = String::from("existential crisis");
+    callback(&motto);
+}
+
+fn main() {
+    call_me_maybe(|motto| {
+        println!("motto: {}", motto);
+    });
+}
+----
+
+[.right]
+[listing]
+----
+motto: existential crisis
+----
+--
+
+== HRTBs
+
+\... but:
+
+[source,rust]
+----
+//                                 v what's this
+//                                 v lifetime, exactly?
+fn call_me_maybe(callback: impl Fn(&String)) {
+    let motto = String::from("existential crisis");
+    callback(&motto);
+}
+----
+
+== HRTBs
+
+\... but:
+
+[source,rust]
+----
+//                                 v what's this
+//                                 v lifetime, exactly?
+fn call_me_maybe(callback: impl Fn(&String)) {
+    let motto = String::from("existential crisis");
+    callback(&motto);
+}
+----
+
+Once again, *lifetime elision* kicked-in - let's try to desugar our code and see what's happening underneath.
+
+== HRTBs
+
+Our first thought may be:
+
+[source,rust]
+----
+fn call_me_maybe<'a>(callback: impl Fn(&'a String)) {
+    let motto = String::from("existential crisis");
+    callback(&motto);
+}
+----
+
+== HRTBs
+
+\... but, unfortunately:
+
+[.text-center]
+image::computer-says-no.jpg[]
+
+== HRTBs
+
+[listing]
+----
+error[E0597]: `motto` does not live long enough
+----
+
+== HRTBs
+
+[listing]
+----
+error[E0597]: `motto` does not live long enough
+  |
+1 | fn call_me_maybe<'a>(callback: impl Fn(&'a String)) {
+  |                  -- lifetime `'a` defined here
+----
+
+== HRTBs
+
+[listing]
+----
+error[E0597]: `motto` does not live long enough
+  |
+1 | fn call_me_maybe<'a>(callback: impl Fn(&'a String)) {
+  |                  -- lifetime `'a` defined here
+3 |     callback(&motto);
+  |     ---------^^^^^^-
+  |     |
+  |     argument requires that `motto` is borrowed for `'a`
+4 | }
+----
+
+== HRTBs
+
+[listing]
+----
+error[E0597]: `motto` does not live long enough
+  |
+1 | fn call_me_maybe<'a>(callback: impl Fn(&'a String)) {
+  |                  -- lifetime `'a` defined here
+3 |     callback(&motto);
+  |     ---------^^^^^^-
+  |     |        |
+  |     |        borrowed value does not live long enough
+  |     argument requires that `motto` is borrowed for `'a`
+4 | }
+  | - `motto` dropped here while still borrowed
+----
+
+== HRTBs
+
+What the compiler is _trying_ to say is that our `&motto` doesn't necessarily live for `'a`, as we've tried to persuade
+it.
+
+== HRTBs
+
+What the compiler is _trying_ to say is that our `&motto` doesn't necessarily live for `'a`, as we've tried to persuade
+it.
+
+And, to no one's surprise, that's _true_!
+
+To see why, let's move on to the *call site*.
+
+== HRTBs
+
+[source,rust]
+----
+fn call_me_maybe<'a>(callback: impl Fn(&'a String)) {
+    let motto = String::from("existential crisis");
+    callback(&motto);
+}
+
+fn main() {
+    //              v------------v
+    call_me_maybe::<'some_lifetime>(|motto| {
+        println!("motto: {}", motto);
+    });
+}
+----
+
+From the `main` ' s point of view, *what's this lifetime*?
+
+== HRTBs
+
+[source,rust]
+----
+fn call_me_maybe<'a>(callback: impl Fn(&'a String)) {
+    let motto = String::from("existential crisis");
+    callback(&motto);
+}
+
+fn main() {
+    //              v------------v
+    call_me_maybe::<'some_lifetime>(|motto| {
+        println!("motto: {}", motto);
+    });
+}
+----
+
+This lifetime depends on _nothing_ inside the `main` function, so what sense does it even make here?
+
+== HRTBs
+
+Why do we even declared our function as *generic* over a lifetime `'a`, if there's just *one* lifetime that could ever
+possibly match?
+
+[source,rust]
+----
+fn call_me_maybe<'a>(callback: impl Fn(&'a String)) {
+    { // lifetime 'motto starts here
+
+        let motto = String::from("existential crisis");
+
+        callback(&motto); // callback must use this
+                          // "internal" 'motto lifetime
+
+    } // lifetime 'motto ends here
+}
+----
+
+== HRTBs
+
+So, similarly to the case we'd had before, we want for `call_me_maybe()` to invoke a callback _without_ caring for /
+naming the actual lifetime.
+
+== HRTBs
+
+So, similarly to the case we'd had before, we want for `call_me_maybe()` to invoke a callback _without_ caring for /
+naming the actual lifetime.
+
+*Higher-ranked trait bounds* come to the rescue.
+
+== HRTBs
+
+[source,rust]
+----
+fn call_me_maybe(callback: impl Fn(&String)) {
+    let motto = String::from("existential crisis");
+    callback(&motto);
+}
+----
+
+== HRTBs
+
+[source,rust]
+----
+fn call_me_maybe(
+    callback: impl for<'a> Fn(&'a String)
+) {
+    let motto = String::from("existential crisis");
+    callback(&motto);
+}
+----
+
+== HRTBs
+
+[source,rust]
+----
+fn call_me_maybe(
+    callback: impl for<'a> Fn(&'a String)
+) {
+    let motto = String::from("existential crisis");
+    callback(&motto);
+}
+----
+
+Lo and behold, it actually works.

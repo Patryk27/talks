@@ -1,0 +1,691 @@
+== GATs
+
+== GATs
+
+Y'all know the `Iterator` trait, right?
+
+[source,rust]
+----
+pub trait Iterator {
+    type Item;
+    fn next(&mut self) -> Option<Self::Item>;
+}
+----
+
+== GATs
+
+Y'all know the `Iterator` trait, right?
+
+[source,rust]
+----
+pub trait Iterator {
+    type Item;
+    fn next(&mut self) -> Option<Self::Item>;
+}
+----
+
+Pros:
+
+== GATs
+
+Y'all know the `Iterator` trait, right?
+
+[source,rust]
+----
+pub trait Iterator {
+    type Item;
+    fn next(&mut self) -> Option<Self::Item>;
+}
+----
+
+Pros:
+
+- really simple & tidy
+
+== GATs
+
+Y'all know the `Iterator` trait, right?
+
+[source,rust]
+----
+pub trait Iterator {
+    type Item;
+    fn next(&mut self) -> Option<Self::Item>;
+}
+----
+
+Pros:
+
+- really simple & tidy
+- does its job
+
+== GATs
+
+Y'all know the `Iterator` trait, right?
+
+[source,rust]
+----
+pub trait Iterator {
+    type Item;
+    fn next(&mut self) -> Option<Self::Item>;
+}
+----
+
+Pros:
+
+- really simple & tidy
+- does its job
+- with us since, like, forever
+
+== GATs
+
+Y'all know the `Iterator` trait, right?
+
+[source,rust]
+----
+pub trait Iterator {
+    type Item;
+    fn next(&mut self) -> Option<Self::Item>;
+}
+----
+
+[.columns-2]
+--
+[.left]
+Pros:
+
+[.right]
+Cons:
+--
+
+[.columns-2]
+--
+[.left]
+- really simple & tidy
+- does its job
+- with us since, like, forever
+--
+
+== GATs
+
+Y'all know the `Iterator` trait, right?
+
+[source,rust]
+----
+pub trait Iterator {
+    type Item;
+    fn next(&mut self) -> Option<Self::Item>;
+}
+----
+
+[.columns-2]
+--
+[.left]
+Pros:
+
+[.right]
+Cons:
+--
+
+[.columns-2]
+--
+[.left]
+- really simple & tidy
+- does its job
+- with us since, like, forever
+
+[.right]
+- how do I return an item that borrows from the iterator?
+--
+
+== GATs
+
+Now, that _might_ seem like a weird question at first, so let's get our hands on some code that would benefit from such
+iterator.
+
+== GATs
+
+[source,rust]
+----
+use std::fs::File;
+use std::io::{BufRead, BufReader};
+
+fn main() {
+    let file = File::open("test.txt")
+        .unwrap();
+
+    let lines = BufReader::new(file)
+        .lines();
+
+    for line in lines {
+        println!("{}", line.unwrap());
+    }
+}
+----
+
+== GATs
+
+What's wrong with this code?
+
+== GATs
+
+What's wrong with this code?
+
+It's alright~ish, but not perfect, because it's *suboptimal*.
+
+== GATs
+
+[source,rust]
+----
+fn main() {
+    /* ... */
+
+    for line in lines {
+        // For each line, `BufReader` has to allocate a
+        // brand-new `String`.
+        //
+        // Ideally, `BufReader` would just return
+        // `Iterator<Item=&str>`, re-using the same
+        // `String` underneath.
+
+        println!("{}", line.unwrap());
+    }
+}
+----
+
+== GATs
+
+Naturally, a question arises:
+
+Why can't `Lines` (i.e. the object you get by invoking `.lines()`) be `Iterator<Item = &str>` right now?
+
+== GATs
+
+Naturally, a question arises:
+
+Why can't `Lines` (i.e. the object you get by invoking `.lines()`) be `Iterator<Item = &str>` right now?
+
+Is it because some big Rust-pharma doesn't want you to know about _truly_ zero-cost abstractions?
+
+== GATs
+
+Naturally, a question arises:
+
+Why can't `Lines` (i.e. the object you get by invoking `.lines()`) be `Iterator<Item = &str>` right now?
+
+Is it because some big Rust-pharma doesn't want you to know about _truly_ zero-cost abstractions?
+
+To find out, let's try to create such iterator!
+
+== GATs
+
+Starting from the top:
+
+[source,rust]
+----
+struct SmartLines {
+    /* ... */
+}
+----
+
+== GATs
+
+For maximum pleasure & re-usability, we're going to be generic over everything that's `Read`:
+
+[source,rust]
+----
+use std::io::Read;
+
+struct SmartLines<R: Read> {
+    /* ... */
+}
+----
+
+== GATs
+
+As for the fields - since what we're creating is a _wrapper_, we'll for sure need to store the underlying reader:
+
+[source,rust]
+----
+use std::io::Read;
+
+struct SmartLines<R: Read> {
+    reader: R,
+}
+----
+
+== GATs
+
+Since what we're creating is _smart_, we'll for sure need to store the line-buffer too:
+
+[source,rust]
+----
+use std::io::Read;
+
+struct SmartLines<R: Read> {
+    reader: R,
+    line: String,
+}
+----
+
+== GATs
+
+We could use some constructor:
+
+[source,rust]
+----
+/* ... */
+
+impl<R: Read> SmartLines<R> {
+    pub fn new(reader: R) -> Self {
+        Self {
+            reader,
+            line: String::new(),
+        }
+    }
+}
+----
+
+== GATs
+
+And, finally, the `impl Iterator` - we're so, _so_ close!
+
+[source,rust]
+----
+/* ... */
+
+impl<R: Read> Iterator for SmartLines<R> {
+    /* ... */
+}
+----
+
+== GATs
+
+We're going to yield `&str`, so:
+
+[source,rust]
+----
+/* ... */
+
+impl<R: Read> Iterator for SmartLines<R> {
+    type Item = &str;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        todo!()
+    }
+}
+----
+
+== GATs
+
+We're going to yield `&str`, so:
+
+[source,rust]
+----
+/* ... */
+
+impl<R: Read> Iterator for SmartLines<R> {
+    type Item = &str;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        todo!()
+    }
+}
+----
+
+\... oh, right...
+
+== GATs
+
+[listing]
+----
+error[E0106]: missing lifetime specifier
+   |
+   |     type Item = &str;
+   |                 ^ expected named lifetime parameter
+----
+
+== GATs
+
+[source,rust]
+----
+impl<R: Read> Iterator for SmartLines<R> {
+    type Item = &str;
+             // ^ we can't name this lifetime here...
+
+         // v ... because it's not known up to
+         // v     the point here
+    fn next(&mut self) -> Option<Self::Item> {
+        todo!()
+    }
+}
+----
+
+== GATs
+
+But - _d'oh!_ - why don't we just implement the `Iterator` _for a reference_?
+
+== GATs
+
+[source,rust]
+----
+impl<'a, R: Read> Iterator for &'a mut SmartLines<R> {
+    /* ... */
+}
+----
+
+== GATs
+
+[source,rust]
+----
+impl<'a, R: Read> Iterator for &'a mut SmartLines<R> {
+    type Item = &'a str;
+
+    /* ... */
+}
+----
+
+== GATs
+
+[source,rust]
+----
+impl<'a, R: Read> Iterator for &'a mut SmartLines<R> {
+    type Item = &'a str;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        todo!()
+    }
+}
+----
+
+== GATs
+
+[source,rust]
+----
+impl<'a, R: Read> Iterator for &'a mut SmartLines<R> {
+    type Item = &'a str;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        Some(&self.line)
+    }
+}
+----
+
+[.compact]
+== GATs
+
+[listing]
+----
+error[E0495]: cannot infer an appropriate lifetime for borrow expression due to conflicting requirements
+   |
+   |         Some(&self.line)
+   |              ^^^^^^^^^^
+   |
+note: first, the lifetime cannot outlive the anonymous lifetime #1 defined on the method body at 20:5...
+   |
+   | /     fn next(&mut self) -> Option<Self::Item> {
+   | |         Some(&self.line)
+   | |     }
+   | |_____^
+note: ...so that reference does not outlive borrowed content
+   |
+   |         Some(&self.line)
+   |              ^^^^^^^^^^
+note: but, the lifetime must be valid for the lifetime `'a` as defined on the impl at 17:6...
+   |
+   | impl<'a, R: Read> Iterator for &'a mut SmartLines<R> {
+   |      ^^
+note: ...so that the types are compatible
+   |
+   |       fn next(&mut self) -> Option<Self::Item> {
+   |  ______________________________________________^
+   | |         Some(&self.line)
+   | |     }
+   | |_____^
+----
+
+== GATs
+
+What the compiler is trying to say is that `&mut self` doesn't necessarily live for `'a`, because they are two separate
+lifetimes:
+
+[source,rust]
+----
+impl<'a, R: Read> Iterator for &'a mut SmartLines<R> {
+    type Item = &'a str;
+
+         // v doesn't necessarily predecease 'a
+    fn next(&mut self) -> Option<Self::Item> {
+        Some(&self.line)
+    }
+}
+----
+
+== GATs
+
+We could try fixing this by annotating the lifetime we _expect_ to be there:
+
+[source,rust]
+----
+impl<'a, R: Read> Iterator for &'a mut SmartLines<R> {
+    type Item = &'a str;
+
+          // vv here
+    fn next(&'a mut self) -> Option<Self::Item> {
+        Some(&self.line)
+    }
+}
+----
+
+== GATs
+
+We could try fixing this by annotating the lifetime we _expect_ to be there:
+
+[source,rust]
+----
+impl<'a, R: Read> Iterator for &'a mut SmartLines<R> {
+    type Item = &'a str;
+
+          // vv here
+    fn next(&'a mut self) -> Option<Self::Item> {
+        Some(&self.line)
+    }
+}
+----
+
+\... but, as you might have guessed, *that doesn't work*
+
+== GATs
+
+[.listing]
+----
+error[E0308]: method not compatible with trait
+   |
+   |     fn next(&'a mut self) -> Option<Self::Item> {
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |                               lifetime mismatch
+   |
+   = note: expected fn pointer
+             `fn(&mut &'a mut SmartLines<R>) -> Option<_>`
+           found fn pointer
+             `fn(&'a mut &'a mut SmartLines<R>) -> Option<_>`
+----
+
+== GATs
+
+The proper solution, as it turns out, requires a magic of *GATs*.
+
+== GATs
+
+The proper solution, as it turns out, requires a magic of *generic associated types*.
+
+== GATs
+
+Let's go back to the definition of our iterator:
+
+[source,rust]
+----
+pub trait Iterator {
+    type Item;
+    fn next(&mut self) -> Option<Self::Item>;
+}
+----
+
+== GATs
+
+Let's go back to the definition of our iterator:
+
+[source,rust]
+----
+pub trait Iterator {
+    type Item;
+    fn next(&mut self) -> Option<Self::Item>;
+}
+----
+
+The issue with current design is that we cannot possibly name or _provide_ the lifetime for the `Item` associated type.
+
+== GATs
+
+Let's go back to the definition of our iterator:
+
+[source,rust]
+----
+pub trait Iterator {
+    type Item;
+    fn next(&mut self) -> Option<Self::Item>;
+}
+----
+
+The issue with current design is that we cannot possibly name or _provide_ the lifetime for the `Item` associated type.
+
+Solution? Let's make the `Item` generic (at least over lifetimes)!
+
+== GATs
+
+[source,rust]
+----
+trait StreamingIterator {
+    type Item<'a>;
+    fn next(&mut self) -> Option<Self::Item<'_>>;
+}
+----
+
+== GATs
+
+[source,rust]
+----
+impl<R: Read> StreamingIterator for SmartLines<R> {
+    type Item<'a> = &'a str;
+
+    fn next(&mut self) -> Option<Self::Item<'_>> {
+        todo!()
+    }
+}
+----
+
+== GATs
+
+[source,rust]
+----
+impl<R: Read> StreamingIterator for SmartLines<R> {
+    type Item<'a> = &'a str;
+
+    fn next(&mut self) -> Option<Self::Item<'_>> {
+        todo!()
+    }
+}
+----
+
+It's been already possible for a while on nightly, although the feature itself is very much work-in-progress.
+
+== GATs
+
+At this point we can create associated types generic solely over lifetimes:
+
+[source,rust]
+----
+trait Foo {
+    type Bar<'a, 'b, 'c>
+        where 'a: 'b;
+}
+----
+
+== GATs
+
+At this point we can create associated types generic solely over lifetimes:
+
+[source,rust]
+----
+trait Foo {
+    type Bar<'a, 'b, 'c>
+        where 'a: 'b;
+}
+----
+
+\... but, as the name of the feature suggests, eventually we'll be able to construct arbitrarily-generic associated
+types.
+
+== GATs
+
+Thanks to GATs, in the future we'll be able to create structures generic over - for instance - pointer types:
+
+[source,rust]
+----
+trait PointerFamily {
+    type Pointer<T>: Deref<Target = T>;
+}
+----
+
+== GATs
+
+[source,rust]
+----
+trait PointerFamily {
+    type Pointer<T>: Deref<Target = T>;
+}
+
+struct ArcFamily;
+
+impl PointerFamily for ArcFamily {
+    type Pointer<T> = Arc<T>;
+}
+
+struct RcFamily;
+
+impl PointerFamily for RcFamily {
+    type Pointer<T> = Rc<T>;
+}
+----
+
+[.compact]
+== GATs
+
+[source,rust]
+----
+trait PointerFamily {
+    type Pointer<T>: Deref<Target = T>;
+}
+
+struct ArcFamily;
+
+impl PointerFamily for ArcFamily {
+    type Pointer<T> = Arc<T>;
+}
+
+struct RcFamily;
+
+impl PointerFamily for RcFamily {
+    type Pointer<T> = Rc<T>;
+}
+
+struct Foo<P: PointerFamily> {
+    bar: P::Pointer<String>,
+}
+----
+
+(example from `RFC 1598` @ https://github.com/rust-lang/rfcs/pull/1598)
+
+== GATs
+
+Bonus acronym: initially this feature was called `associated type constructors` (*ATCs*).
