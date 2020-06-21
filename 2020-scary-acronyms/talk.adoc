@@ -1,7 +1,7 @@
 = Scary Acronyms (and Super Creeps): A take on OIBITs, HRTBs, and other charming abbreviations
 Patryk Wychowaniec
 
-:imagesdir: images
+:imagesdir: assets/images
 :stylesdir: styles
 :stylesheet: main.css
 
