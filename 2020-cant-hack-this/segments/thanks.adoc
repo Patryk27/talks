@@ -1,0 +1,44 @@
+== Get started
+
+[.prompter]
+--
+Whether you you feel intimidated or seduced by Nix, there are a few great resources you should check out if you want to
+start your own journey and get to know this language.
+
+While `nix-pills` is one of the most comprehensive resources you'll find, it's also one of the longest ones; most of
+the tutorials and articles you can find are actually pretty great and focus on the practical side of Nix, so starting is
+as simple as downloading Nix from nixos.org and duck-duck-going "nix tutorial" or "nix get started".
+
+So I'd suggest grasping basics of the language by reading random tutorials, and taking a deep dive into `nix-shell` and
+`home-manager`. For starters, I certainly wouldn't recommend jumping into the deep end and switching directly to NixOS,
+simply because it's easy to get lost and without knowledge of the language you probably won't find your way out, getting
+stuck on setting up drivers or whatever.
+
+First, try `home-manager`, see if that works out for you, and then decide whether you want to invest a bit more.
+--
+
+[source,shell]
+----
+$ curl -L https://nixos.org/nix/install | sh
+----
+
+- https://nixcloud.io/tour
+- https://nixos.org/nixos/nix-pills
+- https://learnxinyminutes.com/docs/nix/
+- https://www.sam.today/blog/environments-with-nix-shell-learning-nix-pt-1/
+
+[.title]
+== Can't Hack This: ~ Patryk Wychowaniec, 2020
+
+[.prompter]
+--
+This presentation was called `Can't Hack This: A hard-headed introduction to Nix`; my name is Patryk Wychowaniec and I'm
+grateful I could share this hour with you, thanks to courtesy of the fp-wroc group.
+
+Feel free to ask any questions.
+--
+
+https://fp-wroc.github.io/
+
+[.text-center]
+Thank you!

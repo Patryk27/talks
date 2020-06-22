@@ -1,0 +1,63 @@
+[.gallery]
+== Sekrety Elektroniki
+
+[.prompter]
+--
+While objectively you could say my memory isn't that great, one of the things I _do_ recall vividly from my not-that-far
+childhood is a toy called, loosely translating, `the secrets of electronics`.
+
+Basically, it was an electronic science kit.
+--
+
+image::sekrety-elektroniki-1.jpg[width = 50%]
+
+[.gallery]
+== Sekrety Elektroniki
+
+[.prompter]
+--
+Though this very photo is from a newer set, it more or less resembles the version I used to play with too; you had a
+bunch of various modules (like fm radio receiver and sound amplifier) you could stitch together to end up with a radio
+or whatever. There was a small electronic motor, some buttons, and diodes, stuff like that.
+--
+
+image::sekrety-elektroniki-2.jpg[width = 75%]
+
+[.gallery]
+== Sekrety Elektroniki
+
+[.prompter]
+--
+As it is with toys, this one, too, was a rather addictive one; its manual listed tons of stuff you could build, but -
+obviously - one was bounded only by their imagination.
+
+So having completed almost every construction from the manual (think: sirens, radios, dangerous flying propellers), I've
+started to include parts _from outside_ the main set - just some random electronic stuff I saw lying around the room that
+seemed pretty much useless for me just a few days before.
+
+This toy introduced me into an entirely new, fascinating, and frankly a bit intimidating world of electronics; and
+despite the fact that I've eventually become neither Turing with my own Bombe, nor Babbage with my own Analytical
+Engine, and generally switched to programming, I've learned a lot on the way - partially thanks to this toy I wasn't
+that much afraid of fiddling with Arduino, my first Atmegas, Omega2 or Raspberry Pi a few years later.
+--
+
+image::sekrety-elektroniki-3.jpg[width = 70%]
+
+== Nix(OS)
+
+[.prompter]
+--
+I wanted to start with this kind of a cheesy preamble, because - for me - learning and trying Nix was - and to some
+degree still remains - such a new, fascinating, and intimidating adventure.
+
+There's this word - epiphany - that means `a moment when you suddenly feel that you understand`, and I'm having that a
+lot with Nix, preceded with moments of frustration.
+
+Its unorthodox approach to managing packages and, in case of NixOS, managing the entire system's configuration, is
+spine-chilling at first, but rewarding as you get to know Nix better.
+
+So far I've been a NixOS user for about four months, and - though I'm not backed-up with any statistics for that -
+having switched from Ubuntu, I feel like my hair can finally grow faster than I'm tearing it out. Although I'm
+obviously well-aware that it's not the case for everyone.
+--
+

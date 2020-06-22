@@ -1,0 +1,343 @@
+== nix-shell -p
+
+[.prompter]
+--
+One of the standard, built-in Nix tools I find useful _the most_ (virtually every day) is `nix-shell`.
+
+`nix-shell` starts a sub-shell with given application in scope; after finishing what you have to do with that
+application you just type `exit` and it brings you to the previous shell.
+
+Intuitively, and simplifying a bit, `nix-shell` downloads given package to the central storage and starts a new shell
+with updated `PATH` environmental variable.
+
+In this example I'm launching NodeJS - you can see that initially I don't have it installed at all, and that after I'm
+done, my system's global state is still untouched (that is: I still don't have node installed).
+
+Had I had `node` installed before, the version inside `nix-shell` would take over the priority, but - once again - just
+for the time while I'm inside the sub-shell.
+--
+
+[source,shell]
+----
+$ node --version
+# command not found: node
+
+$ nix-shell -p nodejs
+[nix-shell] $ node --version
+[nix-shell] # v12.18.1
+[nix-shell] $ exit
+
+$ node --version
+# command not found: node
+----
+
+== nix-shell -p
+
+[.prompter]
+--
+Contrary to Docker, LXD or Podman, `nix-shell` by default doesn't spawn any kind of a container or chroot (although it
+can!).
+
+Thanks to this approach, you can - for instance - launch applications that require access to the graphical environment,
+ssh agent or just your local file system without having to tamper with mounts, just like you can see on the bottom
+example.
+--
+
+[source,shell]
+----
+$ nix-shell -p firefox
+[nix-shell] $ ./firefox
+----
+
+or
+
+[source,shell]
+----
+$ echo 'main = putStrLn "Hello, World!"' > example.hs
+$ nix-shell -p ghc
+[nix-shell] $ ghc ./example.hs
+[nix-shell] $ ./example
+[nix-shell] # Hello, World!
+----
+
+[.compact.no-title]
+== nix-shell -p
+
+[.prompter]
+--
+You might think "can't I just quickly install & uninstall haskell or php" globally?
+Well, this ain't always that easy and can still leave lots of left-over trash on your computer.
+For example, on Ubuntu that's what you get together on board with Haskell.
+--
+
+[source,shell]
+----
+$ apt install haskell-platform
+[...]
+The following NEW packages will be installed:
+  alex binutils binutils-common binutils-x86-64-linux-gnu ca-certificates cabal-install cpp cpp-9 curl
+  freeglut3 freeglut3-dev gcc gcc-9 gcc-9-base ghc happy haskell-platform hscolour krb5-locales libasan5
+  libasn1-8-heimdal libatomic1 libbinutils libbrotli1 libbsd-dev libbsd0 libc-dev-bin libc6-dev libcc1-0
+  libcrypt-dev libctf-nobfd0 libctf0 libcurl4 libdrm-amdgpu1 libdrm-common libdrm-intel1 libdrm-nouveau2
+  libdrm-radeon1 libdrm2 libedit2 libegl-dev libegl-mesa0 libegl1 libelf1 libexpat1 libffi-dev libgbm1
+  libgcc-9-dev libghc-async-dev libghc-attoparsec-dev libghc-call-stack-dev libghc-case-insensitive-dev
+  libghc-erf-dev libghc-fgl-dev libghc-fixed-dev libghc-gluraw-dev libghc-glut-dev libghc-half-dev
+  libghc-hashable-dev libghc-haskell-src-dev libghc-html-dev libghc-http-dev libghc-hunit-dev
+  libghc-integer-logarithms-dev libghc-network-dev libghc-network-uri-dev libghc-objectname-dev
+  libghc-opengl-dev libghc-openglraw-dev libghc-parallel-dev libghc-primitive-dev libghc-quickcheck2-dev
+  libghc-random-dev libghc-regex-base-dev libghc-regex-compat-dev libghc-regex-posix-dev
+  libghc-scientific-dev libghc-split-dev libghc-statevar-dev libghc-syb-dev libghc-tf-random-dev
+  libghc-unordered-containers-dev libghc-vector-dev libghc-zlib-dev libgl-dev libgl1 libgl1-mesa-dev
+  libgl1-mesa-dri libglapi-mesa libgles-dev libgles1 libgles2 libglu1-mesa libglu1-mesa-dev libglvnd-dev
+  libglvnd0 libglx-dev libglx-mesa0 libglx0 libgmp-dev libgmpxx4ldbl libgomp1 libgssapi-krb5-2
+  libgssapi3-heimdal libhcrypto4-heimdal libheimbase1-heimdal libheimntlm0-heimdal libhx509-5-heimdal
+  libice-dev libice6 libisl22 libitm1 libk5crypto3 libkeyutils1 libkrb5-26-heimdal libkrb5-3
+  libkrb5support0 libldap-2.4-2 libldap-common libllvm9 liblsan0 libmpc3 libmpfr6 libncurses-dev
+  libncurses5-dev libnghttp2-14 libopengl-dev libopengl0 libpciaccess0 libpsl5 libpthread-stubs0-dev
+  libquadmath0 libroken18-heimdal librtmp1 libsasl2-2 libsasl2-modules libsasl2-modules-db
+  libsensors-config libsensors5 libsm-dev libsm6 libsqlite3-0 libssh-4 libssl1.1 libtsan0 libubsan1
+  libvulkan1 libwayland-client0 libwayland-server0 libwind0-heimdal libx11-6 libx11-data libx11-dev
+  libx11-xcb1 libxau-dev libxau6 libxcb-dri2-0 libxcb-dri3-0 libxcb-glx0 libxcb-present0 libxcb-randr0
+  libxcb-sync1 libxcb-xfixes0 libxcb1 libxcb1-dev libxdamage1 libxdmcp-dev libxdmcp6 libxext-dev
+  libxext6 libxfixes-dev libxfixes3 libxi-dev libxi6 libxmu-dev libxmu-headers libxmu6 libxshmfence1
+  libxt-dev libxt6 libxxf86vm1 linux-libc-dev manpages manpages-dev mesa-vulkan-drivers openssl
+  publicsuffix x11-common x11proto-core-dev x11proto-dev x11proto-input-dev x11proto-xext-dev
+  xorg-sgml-doctools xtrans-dev zlib1g-dev
+[...]
+After this operation, 1530 MB of additional disk space will be used.
+Do you want to continue? [Y/n]
+----
+
+== nix-shell -p
+
+[.prompter]
+--
+Also, just for the kicks, Nix makes it delightfully easy to launch _older_ or _unstable_ versions of packages.
+
+Say, you're developing a plugin for Vim and want to ensure it works on some older or unstable versions - you can just
+tell `nix-shell` to use an _older_ variant of `nixpkgs` and it'll happily fetch the software for you according to the
+older derivations.
+
+Ubuntu's package manager - `apt` - has a similar mechanism, but I haven't been actually able to find any package with a
+previous version available, and - symmetrically - installing bleeding-edge software _usually_ requires trusting external
+PPAs, which gives some people sleepless nights.
+
+Arch's package manager - `pacman` - too, has a similar mechanism, but good riddance trying to check out a software that
+requires downgrading some of your already-installed libraries, as you might end up bricking your system.
+--
+
+[source,shell]
+----
+$ vim --version
+# VIM - Vi IMproved 8.2
+
+$ nix-shell \
+    -p vim \
+    -I nixpkgs=https://github.com/NixOS/nixpkgs-channels/archive/4bba6650a6a5a2009e25bdeed8c1e871601a9bfb.tar.gz
+
+[nix-shell] $ vim --version
+[nix-shell] # VIM - Vi IMproved 8.0
+----
+
+[source,shell]
+----
+$ apt-cache madison vim
+# vim | 2:8.1.2269-1ubuntu5
+----
+
+== nix-shell -p
+
+[.prompter]
+--
+Before knowing about Nix, I (and apparently lots of other programmers over the internet) I had used Docker containers to
+test various software I didn't want to have actually installed on my system.
+
+I used to have a zsh function that accepted name of a Docker image and then spawned a new container with a pre-defined
+mount pointing at my current working directory, so that I could easily say for instance `drun php:latest` to end up
+inside a container's shell with PHP in scope.
+
+Honestly, it was rather painful to use & had lots of drawbacks, such as that:
+- it didn't allow me to launch containers requiring access to the windowing system,
+or that
+- it didn't seamlessly integrate with rest of my environment - because Docker launches programs in a sandbox, bash
+terminals inside the containers miss things like plugins or history from the host.
+
+Having worked with Nix for a while, I gotta do the due diligence and say that I find the Nix's approach way easier and
+more versatile to use.
+--
+
+[source,shell]
+----
+function drun() {
+    docker run \
+        --rm \
+        -v "$(pwd):/mnt" \
+        "${@:2}" \
+        -it "$1" \
+        sh -c "cd /mnt; bash"
+}
+
+$ drun php:latest
+----
+
+== nix-shell
+
+[.prompter]
+--
+So that was `nix-shell` with the `-p` option - similarly to how using `docker run` doesn't require you to know a thing
+about writing Dockerfiles, using `nix-shell -p` doesn't require you to know a thing about writing Nix expressions; it's
+rather dull, but incredibly useful.
+
+`nix-shell`, when run without the `-p` option though, changes its behavior a bit: it then reads a `shell.nix` file from
+your current working directory, evaluates the Nix expression inside that file, and drops you to a shell containing
+results of that Nix expression.
+
+Since that's a rather abstract depiction, let's go down to Earth.
+--
+
+[source,shell]
+----
+$ nix-shell
+----
+
+== nix-shell
+
+[.prompter]
+--
+So currently I'm a Rust backend programmer at Anixe, and the project I'm primarily working on is an HTTP server exposing
+some API to our frontend application.
+
+On the architectural level, it's a typical shovel-data-from-frontend-to-backend-to-database thingie.
+
+Our application, as such applications usually do, supports HTTPS - and to support it, it depends on OpenSSL.
+
+Since I consider OpenSSL a rather useless thing to just keep around installed globally on my system, I'm using
+`nix-shell` to provide OpenSSL only while I'm working on this HTTP-server application.
+--
+
+`nix-shell` to the rescue: dependencies
+
+[.compact]
+== nix-shell
+
+[.prompter]
+--
+So I have this file called `shell.nix` in the project's directory, and then - when I enter the project's directory - I
+launch `nix-shell`, which starts a shell with both OpenSSL and pkg-config in scope, simply.
+
+For comparison, on Ubuntu you would have to first install `libssl-dev` globally, and then remember you've got it
+installed when introducing someone new into the project, while Nix makes it cozy and declarative.
+
+As for the Nix expression itself, we can see that it invokes a function `mkShell` with an argument being an attribute
+set consisting of a key `buildInputs` listing the required dependencies. I didn't have to repeat `rust` here, because
+I've got it already installed globally on system.
+
+Additionally, I'm providing an environmental variable `LD_LIBRARY_PATH`, so that the dynamic linker knows where from
+load the `openssl` when starting the binary.
+
+Overall, what you see is a fairly standard `nix-shell` expression; I've got a few of them for various projects - mainly
+installing stuff like OpenSSL or GNU Make.
+--
+
+`shell.nix`:
+
+[source,nix]
+----
+let
+  pkgs = import <nixpkgs> {};
+
+in
+  pkgs.mkShell {
+    buildInputs = [
+      pkgs.openssl
+      pkgs.pkg-config
+    ];
+
+    LD_LIBRARY_PATH="${pkgs.openssl.out}/lib";
+  }
+----
+
+Terminal:
+
+[source,shell]
+----
+$ nix-shell
+[nix-shell] $ cargo build
+----
+
+== nix-shell
+
+[.prompter]
+--
+As an another example, here's a `shell.nix` that, when launched, drops you to a shell with `python3`, `pandas` and
+`requests` in scope. Again, you can then type `exit` and go back to your original, untouched system.
+
+As for what's happening here syntax-wise, is that we're calling a function named `python3.withPackages` with an argument
+being a lambda function accepting one parameter containing all available Python packages.
+--
+
+[source,nix]
+----
+let
+  pkgs = import <nixpkgs> {};
+
+  python-with-packages = pkgs.python3.withPackages
+    (python-packages: [
+      python-packages.pandas
+      python-packages.requests
+    ]);
+
+in
+  pkgs.mkShell {
+    buildInputs = [
+      python-with-packages
+    ];
+  }
+----
+
+== nix-shell
+
+[.prompter]
+--
+To make it clear, we might extract the lambda outside - it's now clear-cut that `python-packages` is a function
+accepting an attribute set and returning a list.
+--
+
+[source,nix]
+----
+let
+  pkgs = import <nixpkgs> {};
+
+  python-packages = pp: [
+    pp.pandas
+    pp.requests
+  ];
+
+  python-with-packages = pkgs.python3.withPackages python-packages;
+
+in
+  pkgs.mkShell {
+    buildInputs = [
+      python-with-packages
+    ];
+  }
+----
+
+== nix-shell: Extra stuff
+
+[.prompter]
+--
+So that was `nix-shell` - when it comes to development and trying out various software, it's a real sharp swiss army
+knife and, in my opinion, it's worth learning Nix just to experiment with everything `nix-shell` has to offer;
+especially since it just so harmoniously blends into whatever system and software you're working on usually.
+
+I wanted to mention that I've deliberately reserved so much time only to talk about `nix-shell` - I've got three more
+applications to show and, since you now know the drill, they'll be all a piece of cake.
+
+Also, as promised before, this is some of the _extra stuff_ I'm leaving for posterity.
+--
+
+- https://github.com/target/lorri (_must-have!_)
+- https://github.com/haslersn/any-nix-shell
+- `nix run` command
+

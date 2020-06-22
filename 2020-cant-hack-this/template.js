@@ -6,46 +6,33 @@ function calibrationSlide() {
     `;
 }
 
-function jokeSlide() {
-    return `
-        <section class="title slide">
-            <header>
-                <h1>Why I switched from Rust to Go</h1>
-                <h2>... and why I'm never going back</h2>
-            </header>
-            <main>
-                <img src="assets/images/gopher.png"/>
-            </main>
-        </section>
-    `;
-}
-
-function titleSlideHeader(node) {
+function titleSlide(node) {
     const title = node.getDocumentTitle({
         partition: true,
     });
 
+    let header;
+
     if (title.hasSubtitle()) {
-        return `
+        header = `
             <h1>${title.getMain()}</h1>
             <h2>${title.getSubtitle()}</h2>
         `;
     } else {
-        return `
+        header = `
             <h1>${node.getDocumentTitle()}</h1>
         `;
     }
-}
 
-function titleSlide(node) {
     return `
         <section class="title slide">
             <header>
-                ${titleSlideHeader(node)}
+                ${header}
             </header>
             <footer>
                 <div class="logo-wrapper">
-                    <img class="logo" src="/mnt/common/images/logos/rust-wroclaw.png"/>
+                    <img class="logo" src="/mnt/common/images/logos/fp-wroclaw.png"/>
+                    <img class="logo" src="/mnt/common/images/logos/nix.png"/>
                 </div>
                 
                 <div class="author-wrapper">
@@ -65,7 +52,7 @@ const getImageCanvas = (node) => {
     });
 
     if (images && images.length > 0) {
-        return images[0]
+        return images[0];
     }
 };
 
@@ -78,14 +65,12 @@ const sectionInlineStyle = (node) => {
         let backgroundSize;
 
         if (roles && roles.includes('contain')) {
-            backgroundSize = 'contain'
+            backgroundSize = 'contain';
         } else {
-            backgroundSize = 'cover'
+            backgroundSize = 'cover';
         }
 
         return `style="background-image: url(${node.getImageUri(image.getAttribute('target'))}); background-size: ${backgroundSize}; background-repeat: no-repeat"`;
-    } else {
-        return '';
     }
 };
 
@@ -94,12 +79,16 @@ const sectionTitle = (node) => {
     const parts = node.getTitle().split(titleSeparator);
     const main = parts[0];
     const subtitle = parts[1];
+
     if (subtitle) {
-        return `<header>
-  <h2>${main}</h2>
-  <h3>${subtitle}</h3>
-</header>`
+        return`
+            <header>
+                <h2>${main}</h2>
+                <h3>${subtitle}</h3>
+            </header>
+        `;
     }
+
     return `<h2>${node.getTitle()}</h2>`
 };
 
@@ -135,10 +124,11 @@ module.exports = {
     `,
 
     section: (node) => `
-        <section class="${sectionRoles(node).join(' ')} ${node.getTitle() === '!' ? 'no-title' : ''}"
-                 data-slide-number="${node.index + 1}"
-                 data-slide-count="${node.parent.blocks.length}"
-                 ${sectionInlineStyle(node)}>
+        <section
+            class="${sectionRoles(node).join(' ')} ${node.getTitle() === '!' ? 'no-title' : ''}"
+            data-slide-number="${node.index + 1}"
+            data-slide-count="${node.parent.blocks.length}"
+            ${sectionInlineStyle(node)}>
             ${sectionTitle(node)}
             ${node.getContent()}
         </section>
@@ -159,7 +149,6 @@ module.exports = {
         </head>
         <body>
             ${calibrationSlide()}
-            ${jokeSlide()}
             ${titleSlide(node)}
             ${node.getContent()}
         </body>
