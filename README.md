@@ -1,4 +1,4 @@
-# Presentations
+# Talks
 
 This repository contains source codes for all my public talks.
 
