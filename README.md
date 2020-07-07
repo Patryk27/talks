@@ -1,6 +1,6 @@
 # Presentations
 
-This repository contains source codes & PDFs of all my public presentations.
+This repository contains source codes for all my public talks.
 
 Made with ❤ thanks to QWERTY keyboards and [asciidoctor-pdf.js](https://github.com/Mogztter/asciidoctor-pdf.js/).
 
