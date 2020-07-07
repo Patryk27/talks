@@ -35,8 +35,7 @@ html {
     overflow: hidden;
     padding: 2.5rem 3.75rem;
 
-    background: linear-gradient(to bottom, #fff 90%, #e6e6e6);
-    background-color: #fff;
+    background: #fff linear-gradient(to bottom, #fff 90%, #e6e6e6);
     border-radius: 5px;
 }
 
@@ -194,6 +193,14 @@ h1, h2, h3 {
 
 .compact table td, .compact table th {
     font-size: .875rem
+}
+
+.gallery figure.image {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2.5em;
 }
 
 code:not([data-lang]) {
@@ -365,3 +372,34 @@ figure.image.crux {
 figure.image.crux {
     align-items: center;
 }
+
+.slide.skip {
+    display: none;
+}
+
+.prompter {
+    display: none;
+}
+
+/* @todo extract this somewhere else */
+
+/*.slide *:not(.prompter) {
+    display: none;
+}
+
+.prompter {
+    display: block !important;
+}
+
+.prompter * {
+    display: block !important;
+    font-size: 1rem !important;
+}
+
+.prompter code {
+    display: inline !important;
+}
+
+.prompter em {
+    display: inline !important;
+}*/

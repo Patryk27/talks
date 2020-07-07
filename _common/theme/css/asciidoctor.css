@@ -263,11 +263,6 @@ select {
     width: 100%
 }
 
-.center {
-    margin-left: auto;
-    margin-right: auto
-}
-
 .spread {
     width: 100%
 }
@@ -1681,14 +1676,6 @@ div.unbreakable {
 
 .yellow-background {
     background-color: #fafa00
-}
-
-span.icon > .fa {
-    cursor: default
-}
-
-a span.icon > .fa {
-    cursor: inherit
 }
 
 .admonitionblock td.icon [class^="fa icon-"] {

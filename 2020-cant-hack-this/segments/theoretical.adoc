@@ -1,0 +1,680 @@
+== Plan
+
+[.prompter]
+--
+We've got two chapters ahead of us:
+- a quick-wit theoretical introduction - I'm going to show you what's Nix all about, so that we're all on the same page,
+- and a practical one, where I'll talk about the way _I_'m using Nix on a daily basis.
+--
+
+- Theoretical: What's Nix?
+- Practical: How I'm using Nix on a daily basis?
+
+== Nix
+
+[.prompter]
+--
+Let's start with the marketing terminology.
+
+There are three different concepts associated with Nix in general:
+- there's Nix the language,
+- there's Nix the package manager,
+- and there's NixOS the operating system.
+
+For practical purposes, we'll be talking primarily about the first two - and the key point I want you to take away from
+this introductory slide is that you _don't_ have to download NixOS to use Nix.
+
+Nix perfectly blends with whatever your distro provides - a lot people use Nix with `apt`, `pacman` or `pkg`, and you
+can easily get rid of it, would you ever find it troublesome.
+
+Also, it works on Mac too.
+--
+
+- Nix (as a language)
+- Nix (as a package manager),
+- NixOS (as an operating system based on Nix).
+
+== Nix, The Language
+
+[.prompter]
+--
+Chapter I: Nix, The Language
+--
+
+== Nix, The Language
+
+[.prompter]
+--
+Astonishingly many people feel intimidated dealing with functional languages - and that's perfectly fine; understanding
+the practical application of a monoid in the category of endofunctors seem _impossibly_ hard when coming from an
+imperative language.
+
+Fortunately, even though Nix _is_ a functional language, it's more of a domain-specific one instead of being
+general-purpose, like - say - OCaml.
+
+So, as a foreword for the theoretical part: don't worry and don't be scared if you have no experience with haskell-y or
+lisp-y-like languages; learning Nix's syntax, as you'll see, is like a breeze, it's just a matter of a handful of
+minutes, and there are no dragons ahead.
+--
+
+Nix is a *lazy*, *functional*, and *pure* language.
+
+== Nix, The Language
+
+[.prompter]
+--
+Since I don't want for this introduction to take forever, we're just going to quickly skim through some examples
+comparing Nix to - and functional programmers among us, please don't be offended - to JavaScript.
+
+;;
+
+For starters: Nix has strings, which you can join using the plus operator.
+--
+
+Nix has strings:
+
+[source,nix]
+----
+"catch" + " 22"
+# catch 22
+----
+
+[source,javascript]
+----
+"catch" + " 22"
+// catch 22
+----
+
+== Nix, The Language
+
+[.prompter]
+--
+Nix has integers and booleans, and supports all that typical 21st century stuff like adding, multiplying or comparing
+things.
+--
+
+Nix has integers and booleans:
+
+[source,nix]
+----
+2*2 > 3*3
+# false
+----
+
+[source,javascript]
+----
+2*2 > 3*3
+// false
+----
+
+== Nix, The Language
+
+[.prompter]
+--
+Even though you _mostly_ cannot annotate types in Nix, it _does_ have a type system that prevents you from shipwrecking
+yourself.
+--
+
+Nix has a structural, static type system:
+
+[source,nix]
+----
+100 > "25"
+# error: cannot compare a string with an integer
+----
+
+[source,javascript]
+----
+100 > "25"
+// true
+----
+
+== Nix, The Language
+
+[.prompter]
+--
+Nix has functions, although you ain't need no parentheses to invoke them.
+
+By the way, the act of invoking a function is called `function application`; feel free to impress someone on your next
+recruitment interview.
+--
+
+Nix has functions:
+
+[source,nix]
+----
+builtins.isInt "twenty two"
+# false
+----
+
+[source,javascript]
+----
+Number.isInteger("twenty two")
+// false
+----
+
+== Nix, The Language
+
+[.prompter]
+--
+You can also define your own functions (lambdas, as called in other languages) - the syntax is `function's parameter`
+colon `function's body`.
+
+For instance, the function you see accepts a parameter (presumably a number) and returns its square.
+--
+
+[source,nix]
+----
+x: x * x
+----
+
+[source,javascript]
+----
+function (x) {
+    return x * x;
+};
+
+(x) => x * x;
+
+x => x * x;
+----
+
+== Nix, The Language
+
+[.prompter]
+--
+Here's an example of defining a function and immediately calling it.
+--
+
+[source,nix]
+----
+(x: x * x) 4
+# 16
+----
+
+[source,javascript]
+----
+(x => x * x)(4)
+// 16
+----
+
+== Nix, The Language
+
+[.prompter]
+--
+If you come from a functional background, then it shouldn't come as a surprise to you that functions in Nix, too,
+always accept exactly one parameter - to create a function working on multiple parameters, one usually uses currying
+(so you create a function returning another function; the inner function automatically captures all the variables from
+the outer function).
+
+This is rather uncommon in Nix, but worth knowing nonetheless.
+--
+
+[source,nix]
+----
+(x: y: x * y) 3 4
+# 12
+
+(x: y: x * y) 3
+# «lambda @ (string):1:5»
+----
+
+[source,javascript]
+----
+function fn(x) {
+    return function (y) {
+        return x * y;
+    }
+}
+
+fn(3)(4)
+// 12
+----
+
+== Nix, The Language
+
+[.prompter]
+--
+Nix has lists, which are a kind of a heterogeneous container; that is: they can keep values of multiple types.
+--
+
+Nix has `lists`:
+
+[source,nix]
+----
+[ 1 2 ] ++ [ "three" ]
+# [ 1 2 "three" ]
+----
+
+[source,javascript]
+----
+[ 1, 2 ].concat("three")
+----
+
+== Nix, The Language
+
+[.prompter]
+--
+One of the Nix's most used features are attribute sets - they are like heterogeneous, arbitrarily-nested hash-maps on
+steroids.
+
+Here I'm comparing them to JavaScript's objects, but - contrary to JavaScript's objects - Nix's attribute sets don't
+have a notion of a `method`; they are nothing but sacks for some data.
+--
+
+Nix has attribute sets:
+
+[source,nix]
+----
+{
+  name = "chrome";
+  version = "1024-beta";
+}
+----
+
+[source,javascript]
+----
+{
+    name: "chrome",
+    version: "1024-beta",
+}
+----
+
+== Nix, The Language
+
+[.prompter]
+--
+Also, it's worth noting that Nix's attribute sets can be recursive - you can have fields depending on each other as long
+as they don't form a cycle.
+
+It's a popular idiom used to, for instance, build full names of packages.
+--
+
+Attribute sets can be recursive:
+
+[source,nix]
+----
+rec {
+  full-name = name + " " + version;
+  name = "chrome";
+  version = "1024-beta";
+}
+----
+
+== Nix, The Language
+
+[.prompter]
+--
+Since Nix is all about building packages, paths are a first-class citizen in Nix.
+--
+
+Nix has paths:
+
+[source,nix]
+----
+foo/bar/zar
+# /home/patryk/somewhere/foo/bar/zar
+----
+
+[source,nix]
+----
+./.
+# /home/patryk/somewhere
+----
+
+== Nix, The Language
+
+[.prompter]
+--
+Since Nix is a functional language, it doesn't have variables as known from imperative languages - this doesn't tie
+one's hands though, because you can still extract common expressions using so-called `let binding` or `let expression`.
+--
+
+Nix has "constants" (in so-called `let binding`):
+
+[source,nix]
+----
+let
+  square = x: x * x;
+
+in
+  square 4
+
+# 16
+----
+
+== Nix, The Language
+
+[.prompter]
+--
+A few slides ago I said that currying is rather uncommon in Nix - it's so because usually if you want for your function
+to work on many parameters, you can just make it accept an attribute set.
+
+The function you see, called `say`, accepts an attribute set with keys `what` and `foo`, and returns a string.
+--
+
+[source,nix]
+----
+let
+  say = { what, who }: "life is a ${what}, ${who}";
+
+in
+  say {
+    what = "cabaret";
+    who = "old chum";
+  }
+
+# "life is a cabaret, old chum"
+----
+
+== Nix, The Language
+
+[.prompter]
+--
+Additionally, you can use question mark to annotate default values, and use ellipsis to make the function ignore all the
+extra items in the attribute set (without the ellipsis, passing an additional key is an error).
+--
+
+[source,nix]
+----
+let
+  say = {
+    what ? "cabaret",
+    who,
+    ...
+  }: "life is a ${what}, ${who}";
+
+in
+  say {
+    who = "old chum";
+    why = "dunno";
+  }
+
+# "life is a cabaret, old chum"
+----
+
+== Nix, The Package Manager
+
+[.prompter]
+--
+That was all Nix the language; now let's talk about Nix the package manager.
+--
+
+== Nix, The Package Manager
+
+[.prompter]
+--
+To understand what makes Nix's approach unique, we've gotta focus on the way packages are _usually_ managed.
+--
+
+[source,shell]
+----
+$ bash
+----
+
+== Nix, The Package Manager
+
+[.prompter]
+--
+So, generally - apart from shell's built-in commands like `echo` - when you try to launch an application, shell reads
+the `PATH` environmental variable, splits its contents via colon, and tries to locate the requested application in each
+of those directories.
+--
+
+[source,shell]
+----
+$ echo "$PATH"
+# /usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+----
+
+== Nix, The Package Manager
+
+[.prompter]
+--
+For instance, you might have `bash` eventually located at `/usr/bin/bash`.
+--
+
+[source,shell]
+----
+$ which bash
+# /usr/local/bash
+----
+
+== Nix, The Package Manager
+
+[.prompter]
+--
+Additionally, applications depend on libraries, which are usually found somewhere inside the `lib` directory; their
+paths can be hard-coded or left to find at the run-time.
+--
+
+[source,shell]
+----
+$ ldd $(which bash)
+# libtinfo.so.6
+#   => /lib/x86_64-linux-gnu/libtinfo.so.6
+#
+# libdl.so.2
+#   => /lib/x86_64-linux-gnu/libdl.so.2
+----
+
+== Nix, The Package Manager
+
+[.prompter]
+--
+Together with other directories like `boot` or `dev`, everything forms a structure called `filesystem hierarchy
+standard`.
+
+That's what you'll find in majority of distros like Arch or Debian.
+--
+
+[source,shell]
+----
+/bin
+/boot
+/dev
+/etc
+/home
+/lib
+...
+----
+
+== Nix, The Package Manager
+
+[.prompter]
+--
+When it comes to Nix though, all the applications and libraries are kept inside a central storage, usually located at
+`/nix/store`.
+
+That's _precisely_ what makes Nix's integration with built-in package managers so smooth - it doesn't modify anything
+inside `bin` or `lib`, but rather keeps packages inside its central storage and extends your `PATH` environmental
+variable accordingly.
+
+As an example, here's where `bash` and its dependencies are installed on my machine.
+
+By the way, if you're familiar with jenv for Java or virtualenv for Python, then it's a similar kind of "a trick".
+--
+
+[source,shell]
+----
+$ which bash
+# /nix/store/i2qc2285icqrsri78saafssp2vjrr5mh-bash-interactive-4.4-p23/bin/bash
+----
+
+[source,shell]
+----
+$ ldd $(which bash)
+# libreadline.so.7
+#   => /nix/store/3xzvmd7y4rjnkbyhdjalvq7462x30p3r-readline-7.0p5/lib/libreadline.so.7
+#
+# libdl.so.2
+#   => /nix/store/qvf11lymvw6n8g66xgj1wsm28z1viqdv-glibc-2.30/lib/libdl.so.2
+----
+
+== Nix, The Package Manager
+
+[.prompter]
+--
+`/nix/store` is an example of _content-addressable storage_ - each derivation (which is Nix's way of saying `package`)
+is kept inside the store, addressed by the derivation's hash and name.
+--
+
+[source,shell]
+----
+/nix/store/$hash-$name
+----
+
+== Nix, The Package Manager
+
+[.prompter]
+--
+Thanks to this design, Nix can keep up with multiple versions of _seemingly incompatible_ packages installed next to
+each other without ruining your filesystem.
+
+For instance, if you have one application that depends on left-pad 0.1, and another one depending on left-pad 0.2, they
+can both co-exist without any issue, because they both depend on physically different libraries from `/nix/store`,
+instead of a global one from system-wide `lib`.
+
+Keeping multiple versions of the same library on systems like Ubuntu is thus usually a bit of a pain in the head,
+because when you install a newer version, it overwrites the older one, and so on.
+
+Not that it's impossible, of course - there are _some_ ways to overcome this problem, both from the user's &
+programmer's point of view. For instance AppImages and Snaps launch programs in chroot jails, with specific libraries
+overridden for given applications.
+--
+
+[source,shell]
+----
+$ ldd $(which sample-app-1)
+# leftpad.so
+#   => /nix/store/abcabcabc-leftpad-1/lib/leftpad.so
+----
+
+[source,shell]
+----
+$ ldd $(which sample-app-2)
+# leftpad.so
+#   => /nix/store/xyzxyzxyz-leftpad-2/lib/leftpad.so
+----
+
+== Nix, Language + Package Manager
+
+[.prompter]
+--
+Finally, we have all the knowledge we need to see what binds together Nix the language with Nix the package manager.
+
+The, a bit simplified, code you see is responsible for building a simple C game called `netris`.
+
+The expression defines where from the source code should be downloaded (in this case it's a GitHub repository), defines
+what are the game's dependencies (ncurses), and provides an installation script written in Bash.
+
+In a way it resembles Arch's PKGBUILD or Gentoo's Ebuilds systems - contrary to most of the package managers though, the
+`installPhase` in Nix is responsible for copying files into the `/nix/store`, not actually installing a package into
+the system (remember: in Nix you get to use a package by extending the `PATH` environmental variable, so more often than
+not, there's just no need to alter the system's global state).
+
+When you try to build this expression, which we _will_ do later, what more or less happens is that:
+--
+
+[source,nix]
+----
+mkDerivation {
+  pname = "netris";
+  version = "0.52";
+  src = fetchFromGitHub { /* ... */ };
+  buildInputs = [ ncurses ];
+
+  configureScript = "./Configure";
+
+  installPhase = ''
+    mkdir -p $out/bin
+    cp ./netris $out/bin
+  '';
+}
+----
+
+[.skip]
+== Nix, Language + Package Manager
+
+[.prompter]
+--
+- first, Nix computes the hash of the entire derivation (including its name, version, source code, hashes of all the
+dependencies etc.),
+
+- then Nix checks whether this derivation hasn't been already built or whether it's not available in an online Nix
+cache,
+
+- if no cached binaries are available, Nix downloads all the required source files,
+
+- builds all the dependencies,
+
+- and, finally, Nix builds the requested derivation - in this case by running the `Configure` script and then executing
+`installPhase`, which copies the binary into the `/nix/store`; the entire process is ridiculously customizable though
+and it's no problem for a derivation to build, say, a static blog from markdown files using Hugo.
+
+Also, it might seem obvious for some people, but I want to explicitly point it out: Nix provides an official, online
+binary cache; that is: unless you start writing your own derivations or force Nix to build everything locally, it will
+download pre-built binaries from cache.nixos.org; so don't worry, installing `firefox` won't force it to be compiled
+locally on your computer, you'll get just the binaries and other required artifacts.
+--
+
+[source,nix]
+----
+mkDerivation {
+  pname = "netris";
+  version = "0.52";
+  src = fetchFromGitHub { /* ... */ };
+  buildInputs = [ ncurses ];
+
+  configureScript = "./Configure";
+
+  installPhase = ''
+    mkdir -p $out/bin
+    cp ./netris $out/bin
+  '';
+}
+----
+
+== Nix
+
+[.prompter]
+--
+What we just saw was one simple derivation for one simple game - since most of the time you want to _use_ an
+already-existing package instead of writing one from scratch, Nix provides a central repository containing tons of
+already-written derivations - from simple CLI tools like `ripgrep`, through packages such as `oh-my-zsh` or `chrome`.
+
+Source code of all those derivations is available at `nixos/nixpkgs` and such a repository of derivations is called a
+`channel`. For comparison, similar concept in Ubuntu's `apt` is called a repository or PPA.
+
+Nix comes with a pre-defined channel pointing at some branch at `nixos/nixpkgs`, but it's turbo easy to create and use
+custom channels; for instance companies deciding to use Nix sometimes create their own private channels on their Git
+repositories where they keep derivations for the in-house applications.
+--
+
+https://github.com/NixOS/nixpkgs
+
+== Nix
+
+[.prompter]
+--
+And that's basically it.
+
+As a closing word for the theoretical part, I feel obliged to say that we barely scratched the surface of what Nix is
+and how it works - we've skipped lots of nuances, and that's okay, because we've gathered here neither to take a deep
+dive into Nix's internals nor to debate how you can use Nix to sync all of your fifteen different computers you surely
+have.
+
+Since we're mostly developers - or at least this presentation has been created with developer-perspective in mind -
+let's now focus on the more practical aspects, let's focus on various Nix _tools_ that can help us in the hardships of
+our programmer lives.
+
+Small disclaimer before we start: to make this presentation a one worth going back to, the following slides contain some
+extra tricks and hyperlinks I won't be addressing explicitly - they are just left for posterity's sake. If you ever
+decide to try some of the tools I'll be presenting and you get to befriend Nix, you might find it useful to re-visit
+these slides and try reading more about that extra stuff.
+
+Phew, all that being said: let's get practical.
+--
+
+Let's get practical, practical.
+

@@ -136,8 +136,7 @@ module.exports = {
         <head>
             <meta charset="UTF-8"/>
             <link rel="stylesheet" href="/mnt/common/theme/css/asciidoctor.css">
-            <link rel="stylesheet" href="/mnt/common/theme/css/font-awesome.css">
-            <link rel="stylesheet" href="/mnt/common/theme/css/highlighting-github.css">
+            <link rel="stylesheet" href="/mnt/common/theme/css/highlight.css">
             <link rel="stylesheet" href="/mnt/common/theme/css/talk.css">
             <script src="/mnt/common/theme/js/highlight.js"></script>
             <script>

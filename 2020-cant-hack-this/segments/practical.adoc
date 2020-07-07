@@ -1,0 +1,4 @@
+include::practical/nix-shell.adoc[]
+include::practical/nix-search.adoc[]
+include::practical/nix-build.adoc[]
+include::practical/home-manager.adoc[]
