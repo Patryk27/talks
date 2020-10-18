@@ -25,6 +25,7 @@ function build-one {
 function build-all {
     podman build -t asciidoctor-pdf ./_deps/asciidoctor-pdf
 
+    build-one 2020-cant-hack-this
     build-one 2020-fantastic-actors
     build-one 2020-scary-acronyms
 }
