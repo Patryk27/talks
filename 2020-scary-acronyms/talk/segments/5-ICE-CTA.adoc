@@ -1,0 +1,40 @@
+== ICE CTA
+
+What do you think the compiler will say about this code?
+
+[source,rust]
+----
+fn main() {
+    break rust;
+}
+----
+
+== ICE CTA
+
+Yes, `rustc` has easter eggs:
+
+image::rust-ice.png[]
+
+== ICE CTA
+
+And, yes, `rustc` has bugs too:
+
+image::rust-ices.png[]
+
+== ICE CTA
+
+*ICE*: internal compiler error
+
+== ICE CTA
+
+*ICE*: internal compiler error
+
+*CTA*: call to action
+
+== My _iced-tea_ for you
+
+Try contributing to `rustc`, `cargo`, `rustfmt` or any other project you find useful - all of them could use a little
+bit more love!
+
+Bonus points for fixing an actual ICE in the compiler, but really: even a single, small commit can improve your (or
+someone else's!) workflow and make (your or someone else's) life better.

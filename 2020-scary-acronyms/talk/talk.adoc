@@ -1,0 +1,22 @@
+= Scary Acronyms (and Super Creeps): A take on OIBITs, HRTBs, and other charming abbreviations
+Patryk Wychowaniec
+
+:imagesdir: assets/images
+:stylesdir: styles
+:stylesheet: main.css
+
+include::segments/1-OIBIT.adoc[]
+
+include::/mnt/common/segments/me-myself-and-i.adoc[]
+
+include::segments/2-HRTB.adoc[]
+
+include::segments/3-GAT.adoc[]
+
+include::segments/4-ZST-DST.adoc[]
+
+include::segments/5-ICE-CTA.adoc[]
+
+include::segments/6-summary.adoc[]
+
+include::segments/7-thanks.adoc[]

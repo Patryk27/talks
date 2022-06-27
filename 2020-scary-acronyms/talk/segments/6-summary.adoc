@@ -1,0 +1,32 @@
+[.compact]
+== To sum up
+
+[%header,cols=2*]
+|===
+| Scary acronym
+| Comforting expansion
+
+| ATC
+| associated type constructor (-> GAT)
+
+| CTA
+| call to action
+
+| DST
+| dynamically-sized type
+
+| GAT
+| generic associated type
+
+| HRTB
+| higher-rank trait bound
+
+| ICE
+| internal compiler error
+
+| OIBIT
+| opt-in built-in trait (-> auto trait)
+
+| ZST
+| zero-sized type
+|===

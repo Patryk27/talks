@@ -1,0 +1,25 @@
+[package]
+name = "distance"
+version = "0.1.0"
+authors = ["Patryk Wychowaniec <pwychowaniec@pm.me>"]
+edition = "2021"
+license = "MIT"
+
+[dependencies]
+arduino-hal = { git = "https://github.com/rahix/avr-hal", rev = "e1418391ad44e8c9655abc7235891299c738e588", features = ["arduino-uno"] }
+embedded-hal = "0.2"
+nb = "0.1"
+panic-halt = "0.2"
+ufmt = "0.1"
+
+[profile.dev]
+panic = "abort"
+lto = true
+opt-level = "s"
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+debug = true
+lto = true
+opt-level = "s"

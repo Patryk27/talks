@@ -1,0 +1,39 @@
+== ENODRIVER
+
+[.text-center]
+I moved out of Kraków to Wrocław about 6 months ago
+
+[.text-center]
+image::krakow.jpg[krakow,75%]
+
+== ENODRIVER
+
+[.text-center]
+While in Kraków, I've been living on semi-outskirts of the city
+
+[.text-center]
+image::krakow-route.jpg[krakow-route,55%]
+
+== ENODRIVER
+
+[.text-center]
+\... and right now, I consider my location similar
+
+[.text-center]
+image::wroclaw-route.jpg[wroclaw-route,45%]
+
+== ENODRIVER
+
+[.text-center]
+What's totally different though, is the taxi service
+
+[.text-center]
+image::wroclaw-uber.png[wroclaw-uber,35%]
+
+== ENODRIVER
+
+[.text-center]
+Solution: Let's roll our own!
+
+[.text-center]
+image::krusty-krab.png[krusty-krab]

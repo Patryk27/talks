@@ -36,7 +36,10 @@ html {
     padding: 2.5rem 3.75rem;
 
     background: #fff linear-gradient(to bottom, #fff 90%, #e6e6e6);
-    border-radius: 5px;
+}
+
+.slide.no-background {
+    background: #ffffff;
 }
 
 h1 {
@@ -52,7 +55,6 @@ h1, h2 {
     font-weight: 600;
     color: #515151;
 }
-
 
 h2 {
     letter-spacing: -.125rem;
@@ -371,6 +373,10 @@ figure.image.crux {
 
 figure.image.crux {
     align-items: center;
+}
+
+figure.image.img-round img {
+    border-radius: 100%;
 }
 
 .slide.skip {

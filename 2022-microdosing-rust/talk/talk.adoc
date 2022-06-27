@@ -1,0 +1,214 @@
+= Microdosing Rust
+
+:imagesdir: assets/images
+:stylesdir: styles
+:stylesheet: main.css
+
+[.text-center]
+image::keyboard.jpg[width=50%]
+
+<<<
+
+++++
+<section class="title slide">
+    <header>
+        <h1>Microdosing Rust</h1>
+        <h2>Why & How to Get Started with AVR?</h2>
+    </header>
+
+    <footer>
+        <div class="logo-wrapper">
+            <img class="logo" src="/mnt/common/images/logos/rust-wroclaw.png"/>
+        </div>
+
+        <div class="author-wrapper">
+            <p class="author">
+                Patryk Wychowaniec
+            </p>
+        </div>
+    </footer>
+</section>
+++++
+
+== About me
+
+[.columns-2]
+--
+++++
+<div style="flex: 0 0 auto; width: 30%; margin-right: 50px;">
+    <figure class="image img-round">
+        <img src="assets/images/me.jpg"/>
+    </figure>
+</div>
+
+<div class="ulist" style="flex: 1">
+    <ul>
+        <li>Coding for living for a few years now,</li>
+        <li>Rust & Nix apostle,</li>
+        <li>
+            Currently working in travel industry, writing Rust for
+            <img src="assets/images/anixe.png" alt="Anixe" style="width: 18%; margin-top: -0.5%"/>
+            by day,
+        </li>
+        <li>
+            ... doing open source by night.
+        </li>
+        <li>
+            <a href="https://pwy.io">pwy.io</a>
+        </li>
+    </ul>
+</div>
+++++
+--
+
+== About us
+
+- What,
+- Why & When,
+- How?
+
+[.no-title]
+== Slide
+
+[.text-center]
+image::avrs-1.jpg[width=100%]
+
+[.no-title]
+== Slide
+
+[.text-center]
+image::avrs-2.jpg[width=100%]
+
+[.no-title]
+== Slide
+
+[.text-center]
+image::avrs-3.jpg[width=100%]
+
+[.no-title]
+== Slide
+
+[.text-center]
+image::avrs-3.jpg[width=100%]
+
+++++
+<div style="position: absolute; top: 56.5%; left: 56.5%; transform: rotate(15deg); color: #ffffff">
+    ← ATmega328P
+</div>
+++++
+
+[.no-title.no-background]
+== Slide
+
+[.text-center]
+image::atmega328p.png[width=80%]
+
+[.no-title.no-background]
+== Slide
+
+++++
+<img src="assets/images/atmega328p.png" style="position: absolute; top: 10%; left: 0; width: 60%;"/>
+
+<div style="position: absolute; top: 50%; left: 55%">
+    16 MHz
+</div>
+++++
+
+[.no-title.no-background]
+== Slide
+
+++++
+<img src="assets/images/atmega328p.png" style="position: absolute; top: 10%; left: 0; width: 60%;"/>
+
+<div style="position: absolute; top: 50%; left: 55%">
+    16 MHz<br>
+    <br>
+    vs<br>
+    <br>
+    12 cores<br>
+    * 2.2 GHz per core<br>
+    * 1000 GHz to MHz<br>
+    = 26 440 MHz
+</div>
+++++
+
+[.no-title.no-background]
+== Slide
+
+++++
+<img src="assets/images/atmega328p.png" style="position: absolute; top: 10%; left: 0; width: 60%;"/>
+
+<div style="position: absolute; top: 50%; left: 55%">
+     i7-8750H is 1650x faster!
+</div>
+++++
+
+[.no-title.no-background]
+== Slide
+
+++++
+<img src="assets/images/atmega328p.png" style="position: absolute; top: 10%; left: 0; width: 60%;"/>
+
+<div style="position: absolute; top: 50%; left: 55%">
+     RAM? 2 KB
+</div>
+++++
+
+[.no-title.no-background]
+== Slide
+
+++++
+<img src="assets/images/atmega328p.png" style="position: absolute; top: 10%; left: 0; width: 60%;"/>
+
+<div style="position: absolute; top: 50%; left: 55%">
+     Flash? 32 KB
+</div>
+++++
+
+[.no-title.no-background]
+== Slide
+
+++++
+<img src="assets/images/atmega328p.png" style="position: absolute; top: 10%; left: 0; width: 60%;"/>
+++++
+
+[.no-title.no-background]
+== Slide
+
+++++
+<img src="assets/images/atmega328p.png" style="position: absolute; top: 10%; left: 0; width: 60%;"/>
+
+<div style="position: absolute; top: 30.5%; left: 57%; font-size: 2em">
+    ←
+</div>
+
+<div style="position: absolute; top: 34.5%; left: 54%; font-size: 2em">
+    ←
+</div>
+
+<div style="position: absolute; top: 38.5%; left: 51%; font-size: 2em">
+    ←
+</div>
+
+<div style="position: absolute; top: 42.5%; left: 48%; font-size: 2em">
+    ←
+</div>
+++++
+
+== Demo
+
+[.text-center]
+~
+
+[.no-title.no-background]
+== Slide
+
+image::bat.jpg[]
+
+== Summary: Where do we go from here?
+
+[.no-title.no-background]
+== Slide
+
+[.text-center]
+image::halt.webp[width=55%]

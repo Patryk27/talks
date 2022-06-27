@@ -1,0 +1,176 @@
+== Summary: I lied
+
+== Summary: I lied
+
+At the beginning, I said that actors are those message-acting objects...
+
+== Summary: I lied
+
+At the beginning, I said that actors are those message-acting objects...
+
+\... but that's actually a _gross_ oversimplification.
+
+== Summary: I lied
+
+At the beginning, I said that actors are those message-acting objects...
+
+\... but that's actually a _gross_ oversimplification.
+
+Actor model originated in *1973* and lots of things have happened since then.
+
+== Summary: I understated
+
+[cols=2]
+.Conveniently passed in silence
+|===
+|===
+
+== Summary: I understated
+
+[cols=2]
+.Conveniently passed in silence
+|===
+| *Supervision* / Fault tolerance
+| What happens when an actor dies?
+|===
+
+== Summary: I understated
+
+[cols=2]
+.Conveniently passed in silence
+|===
+| *Supervision* / Fault tolerance
+| What happens when an actor dies?
+
+| *Persistence*
+| What happens when the application's restarted?
+|===
+
+== Summary: I understated
+
+[cols=2]
+.Conveniently passed in silence
+|===
+| *Supervision* / Fault tolerance
+| What happens when an actor dies?
+
+| *Persistence*
+| What happens when the application's restarted?
+
+| *Network*
+| What happens if we want our application to be distributed?
+|===
+
+== Summary: I understated
+
+.And quite a bit more:
+- actor discovery,
+- cancellable messages,
+- event buses,
+- event sourcing,
+- transactions,
+- (...)
+
+== Summary: I understated
+
+There are comprehensive actor frameworks (like *Akka*) that solve practically all of those issues - Rust, though, still
+has a long journey ahead of it.
+
+We have a few crates to select from - namely: *Actix*, *Bastion* or *Riker* - but for now they aren't nearly as half as
+complete as the ones known in other languages.
+
+== Summary: What problems do actors introduce?
+
+== Summary: What problems do actors introduce?
+
+*Code bloat*, increased *complexity* or overzealous *Arc-ing* are some of the obvious issues that may arise, but let's
+focus on a different aspect - a more language-agnostic one.
+
+== Summary: What problems do actors introduce?
+
+Let's state a few facts:
+
+== Summary: What problems do actors introduce?
+
+Let's state a few facts:
+
+1. Actors are self-contained workers.
+
+== Summary: What problems do actors introduce?
+
+Let's state a few facts:
+
+1. Actors are self-contained workers.
+
+2. You don't invoke actors' code directly, you send messages and patiently wait.
+
+== Summary: What problems do actors introduce?
+
+Let's state a few facts:
+
+1. Actors are self-contained workers.
+
+2. You don't invoke actors' code directly, you send messages and patiently wait.
+
+3. They work miracles when scattered across many servers.
+
+== Summary: What problems do actors introduce?
+
+Let's state a few facts:
+
+1. Actors are self-contained workers.
+
+2. You don't invoke actors' code directly, you send messages and patiently wait.
+
+3. They work miracles when scattered across many servers.
+
+\... so actors are actually your typical kafka-esque / rabbitmq-esque microservices!
+
+== Summary: What problems do _distributed systems_ introduce?
+
+== Summary: What problems do _distributed systems_ introduce?
+
+1. Testing distributed systems is _moderately hard_.
+
+== Summary: What problems do _distributed systems_ introduce?
+
+1. Testing distributed systems is _moderately hard_.
+
+2. Handling Byzantine faults is _hard_.
+
+== Summary: What problems do _distributed systems_ introduce?
+
+1. Testing distributed systems is _moderately hard_.
+
+2. Handling Byzantine faults is _hard_.
+
+3. Handling transactions spanning across many different sub-systems is _really hard_.
+
+== Summary: What problems do _distributed systems_ introduce?
+
+1. Testing distributed systems is _moderately hard_.
+
+2. Handling Byzantine faults is _hard_.
+
+3. Handling transactions spanning across many different sub-systems is _really hard_.
+
+4. Debugging tons of tiny actors over network is _impossibly hard_.
+
+== Summary: What problems do _distributed systems_ introduce?
+
+1. Testing distributed systems is _moderately hard_.
+
+2. Handling Byzantine faults is _hard_.
+
+3. Handling transactions spanning across many different sub-systems is _really hard_.
+
+4. Debugging tons of tiny actors over network is _impossibly hard_.
+
+5. Keeping actors' protocols in sync _can be hard_.
+
+== Summary: When should you use actor model then?
+
+== Summary: When should you use actor model then?
+
+[.text-center]
+Honestly, it depends...

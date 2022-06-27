@@ -1,0 +1,215 @@
+== Crash course: What's an actor?
+
+[NOTE]
+====
+Actor is a self-contained *object* that can receive *messages* and *act* upon them.
+====
+
+== Crash course: What's an actor?
+
+Actors are usually used to model what's commonly known as the _service layer_, e.g.:
+
+[source,rust]
+----
+fn main() {
+    let mut mw = Microwave::new();
+
+    mw.put("popcorn-kernels");
+    mw.put("iphone");
+    mw.start(Duration::from_secs(60));
+}
+----
+
+== Crash course: What's an actor?
+
+[source,rust]
+----
+fn main() {
+    let mut mw = MicrowaveOperator::new();
+
+    mw.slip_note("please put these `popcorn-kernels` inside");
+    mw.slip_note("please put this `iphone` inside");
+    mw.slip_note("please wave micros for 60 seconds");
+}
+----
+
+== Crash course: What's an actor?
+
+[.text-center]
+[graphviz]
+----
+digraph {
+    rankdir=LR;
+
+    me_1 [label="me"]
+    me_1 -> microwave_queue [style=dashed, label="put popcorn-kernels    "]
+
+    me_2 [label="me"]
+    me_2 -> microwave_queue [style=dashed, label="put iphone    "]
+
+    me_3 [label="me"]
+    me_3 -> microwave_queue [style=dashed, label="start"]
+
+    microwave_queue [shape=box, label="Jim's desk"]
+    microwave_queue -> microwave
+
+    microwave [label="Microwave Operator (Jim)"]
+    microwave -> microwave_queue
+}
+----
+
+== !
+
+[.text-center]
+[graphviz]
+----
+digraph {
+    newrank="true"
+
+    me [label="me"]
+    me -> food_provider_website [style=dashed, label=" pasta pls"]
+
+    subgraph cluster_la_pasta {
+        label = "Pasteria La Pasta";
+        style = filled;
+        color = lightblue;
+
+        pasta_order_processor [label="Human Order Processor"]
+        pasta_order_processor -> pasta_chef [style=dashed, label=" create a pasta, hurry!    "]
+
+        pasta_chef [label="Human Chef"]
+        pasta_chef -> pasta_oven [style=dashed, label=" heat this please   "]
+        pasta_chef -> pasta_order_processor [style=dashed, label="  pasta ready!"]
+
+        pasta_oven [label="Non-human Oven"]
+        pasta_oven -> pasta_chef [style=dashed, label="  pasta ready!"]
+    }
+
+    subgraph cluster_food_provider {
+        label = "random-food-provider.pl";
+        style = filled;
+        color = orange;
+
+        food_provider_website [label="website"]
+
+        food_provider_website -> pasta_order_processor [style=dashed, label="  you got a new order    "]
+        pasta_order_processor -> food_provider_website [style=dashed, label="  here's your pasta"]
+    }
+}
+----
+
+== Crash course: How can we model an actor in Rust?
+
+Since we don't have any power over actor's control flow, how can we let it know we need its service?
+
+== Crash course: How can we model an actor in Rust?
+
+[.text-center]
+Using *channels*!
+
+[.compact]
+== !
+
+[source,rust]
+----
+use tokio::stream::StreamExt;
+use tokio::sync::mpsc::unbounded_channel;
+use tokio::task;
+
+#[tokio::main]
+async fn main() {
+    let (tx, mut rx) = unbounded_channel();
+
+    task::spawn(async move {
+        while let Some(msg) = rx.next().await {
+            println!("recv: {}", msg);
+        }
+
+        println!("tx dropped");
+    });
+
+    let _ = tx.send("hello");
+    let _ = tx.send("darkness");
+    let _ = tx.clone().send("my");
+    let _ = tx.clone().send("old");
+    let _ = tx.send("friend");
+}
+----
+
+[TIP]
+`tx` stands for `transmitter`, `rx` stands for `receiver`
+
+[.compact]
+== Crash course: Channels
+
+[.columns-2]
+--
+[.left]
+[source,rust]
+----
+use tokio::stream::StreamExt;
+use tokio::sync::mpsc::unbounded_channel;
+use tokio::task;
+
+#[tokio::main]
+async fn main() {
+    let (tx, mut rx) = unbounded_channel();
+
+    task::spawn(async move {
+        while let Some(msg) = rx.next().await {
+            println!("recv: {}", msg);
+        }
+
+        println!("tx dropped");
+    });
+
+    let _ = tx.send("hello");
+    let _ = tx.send("darkness");
+    let _ = tx.clone().send("my");
+    let _ = tx.clone().send("old");
+    let _ = tx.send("friend");
+}
+----
+
+[.left]
+[listing]
+----
+recv: hello
+recv: darkness
+recv: my
+recv: old
+recv: friend
+tx dropped
+----
+--
+
+== Crash course: Channels
+
+[%headers,cols=4*]
+.Channels (as in `tokio 0.2`)
+|===
+| Name
+| # of producers
+| # of consumers
+| # of messages
+
+| *oneshot*
+| one
+| one
+| one
+
+| *mpsc*
+| many
+| one
+| many
+
+| *broadcast*
+| many
+| many
+| many
+
+| *watch*
+| one
+| many
+| many
+|===

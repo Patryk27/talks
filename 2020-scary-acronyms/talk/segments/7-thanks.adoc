@@ -1,0 +1,31 @@
+++++
+<style>
+.keanu {
+    position: absolute;
+    bottom: 0;
+    width: 350px;
+}
+
+.keanu-left {
+    left: 0;
+    transform: rotate(45deg);
+}
+
+.keanu-right {
+    right: 0;
+    transform: rotate(-45deg);
+}
+</style>
+++++
+
+[.title]
+== Scary Acronyms (and Super Creeps): ~ Patryk Wychowaniec, 2020
+
+[.text-center]
+Thank you!
+
+[.keanu.keanu-left]
+image::keanu.png[]
+
+[.keanu.keanu-right]
+image::keanu.png[]
